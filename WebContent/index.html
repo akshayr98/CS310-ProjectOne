@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Collage Builder Prototype</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script>
+			$(document).ready(function() 
+			{
+				console.log("DEBUG: doc ready");
+				$('#searchbutton').click(function(event)
+				{
+					var now = new Date();
+					console.log(now.getSeconds());
+					console.log(now.getMilliseconds());
+					event.preventDefault(); // prevent submit
+					console.log("DEBUG: submitted");
+					var searchtext = document.getElementById("searchtext").value; // get value from form
+					console.log(searchtext);
+					console.log("DEBUG: before ajax");
+					console.log(now.getSeconds());
+					console.log(now.getMilliseconds());
+					$.ajax(
+					{
+						type: "GET",
+						url: "collageBuilderServlet",
+						data: // pass data
+						{
+							searchtext: searchtext
+						}, // data end
+						success: function(response)
+						{
+							console.log("success");
+							$("#content").empty().append(response);
+						} // end success
+						
+					}); //end ajax
+					console.log("DEBUG: ajax ended");
+					return false;
+				}); // end button click 
+				
+			})// end doc ready
+		</script>
+	</head>
+	<body>
+	
+			<form id = "searchform">
+				<input type="text" id="searchtext"><br/>
+				<button type = "button" id="searchbutton">Build Collage</button> <br/>
+			</form>
+		<div id = "content"></div>
+		
+	</body>
+</html>
