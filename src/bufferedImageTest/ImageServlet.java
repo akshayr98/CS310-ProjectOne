@@ -40,7 +40,7 @@ public class ImageServlet extends HttpServlet {
 		System.out.println("doGet");
 		// create a BufferedImage object to test with
 		// can use any image file you want
-		BufferedImage bImage = ImageIO.read(new File("/home/student/test.png"));
+		BufferedImage bImage = ImageIO.read(new File("/home/student/test.png")); // need absolute file path from root
 		
 		// these 3 variables are responsible for passing the actual image
 		ByteArrayOutputStream baos; // used to convert BufferedImage to ByteArray
