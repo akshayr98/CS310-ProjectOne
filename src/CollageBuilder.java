@@ -6,26 +6,45 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 
 public class CollageBuilder {
+	
+	private int browserHeight;
+	private int browserWidth;
+//	private Vector<String> imageSource;
+	
+	private int collageWidth;
+	private int collageHeight;
 
-	int browserHeight;
-	int browserWidth;
-	Vector<String> imageSource;
-	
-	
-	public CollageBuilder(int inBrowserHeight, int inBrowserWidth, Vector<String> inImageSource) {
-		browserHeight = inBrowserHeight;
-		browserWidth = inBrowserWidth;
-		imageSource = inImageSource;
+	public CollageBuilder(int browserWidth, int browserHeight)
+	{
+		
+		//set for now will change in the future
+		browserWidth = 1920;
+		browserHeight = 1080;
+		
+		// set collage dimensions as per stakeholder requirements
+		this.collageWidth = (int) 0.7 * browserWidth;
+		this.collageHeight = (int) 0.5 * browserHeight;
+		
+		// ensure that collage meets minimum size requirements
+		this.collageWidth = Math.max(this.collageWidth, 800);
+		this.collageHeight = Math.max(this.collageHeight, 600); 
+
 	}
-	//default constructor
-	public CollageBuilder() {
-		browserHeight = 0;
-		browserWidth = 0;
-		imageSource = null;
-	}
 	
-	//public BufferedImage buildCollage(Vector<String> imageSource){
-	public BufferedImage buildCollage() {
+//	public CollageBuilder(int inBrowserHeight, int inBrowserWidth, Vector<String> inImageSource) {
+//		browserHeight = inBrowserHeight;
+//		browserWidth = inBrowserWidth;
+//		imageSource = inImageSource;
+//	}
+//	//default constructor
+//	public CollageBuilder() {
+//		browserHeight = 0;
+//		browserWidth = 0;
+//		imageSource = null;
+//	}
+	
+	public BufferedImage buildCollage(Vector<String> imageSource){
+	//public BufferedImage buildCollage() {
 		// dummy return
 		BufferedImage dummy = new BufferedImage(0, 0, 0);
 		return dummy;
@@ -34,8 +53,8 @@ public class CollageBuilder {
 	
 	//iterates through the vector and checks if all strings are null 
 	//if one is null return false
-	//public boolean checkValid(Vector<String> imageSource) {
-	public boolean checkValid() {
+	public boolean checkValid(Vector<String> imageSource) {
+	//public boolean checkValid() {
 		boolean exists = true;
 		for(int i=0;i<imageSource.size();i++){
 			if(imageSource.get(i)==null) {
@@ -46,8 +65,8 @@ public class CollageBuilder {
 	}
 	
 	//iterates through the the vector of urls, creating BufferedImage vector
-//	public Vector<BufferedImage> grabbingImages(Vector<String> imageSource) throws IOException{
-	public Vector<BufferedImage> grabbingImages() throws IOException{
+	public Vector<BufferedImage> grabbingImages(Vector<String> imageSource) throws IOException{
+//	public Vector<BufferedImage> grabbingImages() throws IOException{
 		Vector<BufferedImage> bi = new Vector<BufferedImage>();
 		for(int i=0;i<imageSource.size();i++) {
 			bi.add(ImageIO.read(new URL(imageSource.get(i))));
