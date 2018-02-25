@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+body {
+	background-color: #ffffff; 
+}
+
+.button {
+	background-color: #777777;
+	color: white;
+	border: none;
+	text-align: center;
+	padding: 8px 16px;
+	font-size: 14px;
+}
+
+#exportbutton {
+	position: absolute;
+	right: 100px;
+	top: 10px;
+}
+
+#collagetitle {
+	font-size: 24px;
+	text-align: center;
+}
+
+#collage {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+#collagecontainer {
+	margin: auto;
+	min-width: 800px;
+	max-width: 70vw;
+	min-height: 600px;
+	max-height: 50vh;
+	padding-bottom: 100px;
+}
+
+#searchterm {
+	font-size: 16px;
+	border: 2px solid #777777;
+}
+
+#formcontainer {
+	margin: auto;
+	width: 400px;
+}
