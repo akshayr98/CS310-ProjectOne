@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+html,body {
+	height:100%;
+	width:100%;
+	margin:0;
+}
+
+body {
+	background-color: #b8b8b8;
+	display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+#content {
+	display: table-cell;
+    vertical-align: middle;
+}
+
+form {
+    width: 400px;
+    margin-left: 42%;
+}
+
+#searchtext {
+	border: 2px solid #777777;
+	font-size: 14px;
+}
+
+#searchbutton {
+	background-color: #777777;
+	color: white;
+	border: none;
+	text-align: center;
+	padding: 8px 16px;
+	font-size: 14px;
+}

@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="ISO-8859-1">
-		<title>Collage Builder Prototype</title>
+		<title>SCollage</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script>
 			$(document).ready(function() 
@@ -39,16 +39,32 @@
 					return false;
 				}); // end button click 
 				
-			})// end doc ready
+				
+			}
+			
+			$('#searchtext').on('keyup', function validate() {
+			    var text = document.forms["searchform"]["searchtext"].value;
+			    if (text == "") {
+			    		var button = document.getElementById("searchbutton");
+			    		button.setAttribute("disabled", "disabled");
+			    }
+			    else {
+			    		button.removeAttribute("disabled");
+			    }
+			})
+			
+			)// end doc ready
 		</script>
+		<link rel="stylesheet" type="text/css" href="index.css">
 	</head>
 	<body>
-	
-			<form id = "searchform">
-				<input type="text" id="searchtext"><br/>
-				<button type = "button" id="searchbutton">Build Collage</button> <br/>
+		<div id="content">
+			<form name="searchform">
+				<input type="text" name="searchtext" id="searchtext" placeholder="Enter topic">
+				<span>
+					<input type="submit" value="Build Collage" id="searchbutton"></input>
+				</span>
 			</form>
-		<div id = "content"></div>
-		
+		</div>
 	</body>
 </html>
