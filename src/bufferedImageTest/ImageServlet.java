@@ -37,7 +37,6 @@ public class ImageServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {    	
     		
-		System.out.println("doGet");
 		// create a BufferedImage object to test with
 		// can use any image file you want
 		BufferedImage bImage = ImageIO.read(new File("/home/student/test.png")); // need absolute file path from root
