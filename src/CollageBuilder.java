@@ -7,7 +7,25 @@ import javax.imageio.ImageIO;
 
 public class CollageBuilder {
 
-	public BufferedImage buildCollage(Vector<String> imageSource){
+	int browserHeight;
+	int browserWidth;
+	Vector<String> imageSource;
+	
+	
+	public CollageBuilder(int inBrowserHeight, int inBrowserWidth, Vector<String> inImageSource) {
+		browserHeight = inBrowserHeight;
+		browserWidth = inBrowserWidth;
+		imageSource = inImageSource;
+	}
+	//default constructor
+	public CollageBuilder() {
+		browserHeight = 0;
+		browserWidth = 0;
+		imageSource = null;
+	}
+	
+	//public BufferedImage buildCollage(Vector<String> imageSource){
+	public BufferedImage buildCollage() {
 		// dummy return
 		BufferedImage dummy = new BufferedImage(0, 0, 0);
 		return dummy;
@@ -16,7 +34,8 @@ public class CollageBuilder {
 	
 	//iterates through the vector and checks if all strings are null 
 	//if one is null return false
-	public boolean checkValid(Vector<String> imageSource) {
+	//public boolean checkValid(Vector<String> imageSource) {
+	public boolean checkValid() {
 		boolean exists = true;
 		for(int i=0;i<imageSource.size();i++){
 			if(imageSource.get(i)==null) {
@@ -27,7 +46,8 @@ public class CollageBuilder {
 	}
 	
 	//iterates through the the vector of urls, creating BufferedImage vector
-	public Vector<BufferedImage> grabbingImages(Vector<String> imageSource) throws IOException{
+//	public Vector<BufferedImage> grabbingImages(Vector<String> imageSource) throws IOException{
+	public Vector<BufferedImage> grabbingImages() throws IOException{
 		Vector<BufferedImage> bi = new Vector<BufferedImage>();
 		for(int i=0;i<imageSource.size();i++) {
 			bi.add(ImageIO.read(new URL(imageSource.get(i))));
@@ -47,7 +67,6 @@ public class CollageBuilder {
 	
 	//takes in an image and rotates it randomly -45 to 45 degrees
 	public BufferedImage rotateImage(BufferedImage inImage) {
-		
 		
 		
 		return inImage;
