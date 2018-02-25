@@ -27,7 +27,7 @@
 	testButton.onclick = function() {
 		
 		// call myServlet doGet()
-		$.get("ImageServlet", function(response) {
+		$.get("${pageContext.request.contextPath}/ImageServlet", function(response) {
 			
 			// for every element in the string list
 			$.each(response, function(index, s) {

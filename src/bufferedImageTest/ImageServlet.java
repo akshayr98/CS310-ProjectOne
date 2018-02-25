@@ -1,4 +1,4 @@
-package servlet;
+package bufferedImageTest;
 
 import java.io.*;
 
@@ -37,9 +37,10 @@ public class ImageServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {    	
     		
+		System.out.println("doGet");
 		// create a BufferedImage object to test with
 		// can use any image file you want
-		BufferedImage bImage = ImageIO.read(new File("C:\\Users\\William\\Desktop\\test.png"));
+		BufferedImage bImage = ImageIO.read(new File("/home/student/test.png"));
 		
 		// these 3 variables are responsible for passing the actual image
 		ByteArrayOutputStream baos; // used to convert BufferedImage to ByteArray
@@ -77,7 +78,7 @@ public class ImageServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.sendRedirect("bufferedImage.jsp");
+		response.sendRedirect("bufferedImageTest/bufferedImage.html");
 	}
 
 }
