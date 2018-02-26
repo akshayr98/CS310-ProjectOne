@@ -46,7 +46,7 @@ public class CollageBuilder {
 		// ensure that collage meets minimum size requirements
 		this.collageWidth = Math.max(this.collageWidth, 800);
 		this.collageHeight = Math.max(this.collageHeight, 600); 
-
+		
 	}
 	
 //	public CollageBuilder(int inBrowserHeight, int inBrowserWidth, Vector<String> inImageSource) {
@@ -80,8 +80,8 @@ public class CollageBuilder {
 			
 		}
 		
-		BufferedImage dummy = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_3BYTE_BGR);
-		return dummy;
+		BufferedImage canvas = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_3BYTE_BGR);
+		return canvas;
 	}
 	
 	
@@ -138,7 +138,6 @@ public class CollageBuilder {
 			int num = rand.nextInt(90)+1;
 			num -= 45;
 			degrees.add(num);
-			
 		}
 		return degrees;
 	}
