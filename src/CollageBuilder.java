@@ -14,7 +14,7 @@ public class CollageBuilder {
 	private int collageWidth;
 	private int collageHeight;
 
-	public CollageBuilder(int browserWidth, int browserHeight)
+	public CollageBuilder(int inBrowserWidth, int inBrowserHeight)
 	{
 		
 		//set for now will change in the future
