@@ -8,7 +8,22 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
+
+
+
 public class CollageBuilder {
+	
+	//TEST TO SEE IF THIS WORKS
+	public static void main(String args[]) {
+		CollageBuilder cb = new CollageBuilder();
+		Vector<String> urls = new Vector<String>();
+		for(int i=0;i<30;i++) {
+			urls.add("http://cdn.audubon.org/cdn/farfuture/RLIlWxqbInfEuN23V2H3hgR6R8M6O6BY47H_6m1ESE8/mtime:1497969000/sites/default/files/styles/hero_image/public/web_gbbc_sandhill_crane_3_bob-howdeshell_tn_2012_kk.jpg?itok=FfVIDhGx");
+		}
+		urls.add(null);
+		cb.buildCollage(urls);
+		
+	}
 	
 	private int browserHeight;
 	private int browserWidth;
@@ -17,9 +32,9 @@ public class CollageBuilder {
 	private int collageWidth;
 	private int collageHeight;
 
-	public CollageBuilder(int inBrowserWidth, int inBrowserHeight)
+	//public CollageBuilder(int inBrowserWidth, int inBrowserHeight)
+	public CollageBuilder()
 	{
-		
 		//set for now will change in the future
 		browserWidth = 1920;
 		browserHeight = 1080;
@@ -47,8 +62,24 @@ public class CollageBuilder {
 //	}
 	
 	public BufferedImage buildCollage(Vector<String> imageSource){
-	//public BufferedImage buildCollage() {
-		// dummy return
+		if(!checkValid(imageSource)) {
+			//returning dummy image if we do not have 30 images
+			return new BufferedImage(0,0,0);
+		}else {
+			try {
+				Vector<BufferedImage> bufferedImageVec = grabbingImages(imageSource);
+				Vector<Integer> randDegrees = generateDegrees();
+				for(int i=0;i<randDegrees.size();i++) {
+					System.out.println(randDegrees.get(i));
+				}
+				System.out.println("Printing");
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
 		BufferedImage dummy = new BufferedImage(0, 0, 0);
 		return dummy;
 	}
@@ -97,6 +128,7 @@ public class CollageBuilder {
 		
 		return inImage;
 	}
+	
 	
 	public Vector<Integer> generateDegrees(){
 		Vector<Integer> degrees = new Vector<Integer>();
