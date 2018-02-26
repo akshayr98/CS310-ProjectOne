@@ -1,6 +1,7 @@
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -67,9 +68,9 @@ public class CollageBuilder {
 	//iterates through the the vector of urls, creating BufferedImage vector
 	public Vector<BufferedImage> grabbingImages(Vector<String> imageSource) throws IOException{
 //	public Vector<BufferedImage> grabbingImages() throws IOException{
-		Vector<BufferedImage> bi = new Vector<BufferedImage>();
+		Vector<BufferedImage> bufferedImageVec = new Vector<BufferedImage>();
 		for(int i=0;i<imageSource.size();i++) {
-			bi.add(ImageIO.read(new URL(imageSource.get(i))));
+			bufferedImageVec.add(ImageIO.read(new URL(imageSource.get(i))));
 		}
 		
 		
@@ -78,17 +79,29 @@ public class CollageBuilder {
 		//BufferedImage image = ImageIO.read(new URL(imageUrl));
 		
 		
-		return bi;
+		return bufferedImageVec;
 	}
 	
 	
 	
 	
 	//takes in an image and rotates it randomly -45 to 45 degrees
-	public BufferedImage rotateImage(BufferedImage inImage) {
+	public BufferedImage rotateImage(BufferedImage inImage,int degrees) {
 		
 		
 		return inImage;
+	}
+	public Vector<Integer> generateDegrees(){
+		Vector<Integer> degrees = new Vector<Integer>();
+		Random rand = new Random();
+		
+		for(int i=0;i<30;i++) {
+			int num = rand.nextInt(90)+1;
+			num -= 45;
+			degrees.add(num);
+			
+		}
+		return degrees;
 	}
 	
 	
