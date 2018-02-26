@@ -1,12 +1,20 @@
+import java.awt.FlowLayout;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 
 
@@ -21,7 +29,24 @@ public class CollageBuilder {
 			urls.add("http://cdn.audubon.org/cdn/farfuture/RLIlWxqbInfEuN23V2H3hgR6R8M6O6BY47H_6m1ESE8/mtime:1497969000/sites/default/files/styles/hero_image/public/web_gbbc_sandhill_crane_3_bob-howdeshell_tn_2012_kk.jpg?itok=FfVIDhGx");
 		}
 		//urls.add(null);
-		cb.buildCollage(urls);
+		JFrame frame = new JFrame();
+		frame.getContentPane().setLayout(new FlowLayout());
+		try {
+			BufferedImage bi = ImageIO.read(new URL(urls.get(0)));
+			bi = cb.getScaledImage(bi, 200, 200);
+		    
+			frame.getContentPane().add(new JLabel(new ImageIcon(cb.rotateImage(bi,-45))));
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		frame.pack();
+		frame.setVisible(true);
+
+		//cb.buildCollage(urls);
 		
 	}
 	
@@ -140,6 +165,25 @@ public class CollageBuilder {
 			degrees.add(num);
 		}
 		return degrees;
+	}
+	private BufferedImage getScaledImage(BufferedImage src, int w, int h){
+	    int finalw = w;
+	    int finalh = h;
+	    double factor = 1.0d;
+	    if(src.getWidth() > src.getHeight()){
+	        factor = ((double)src.getHeight()/(double)src.getWidth());
+	        finalh = (int)(finalw * factor);                
+	    }else{
+	        factor = ((double)src.getWidth()/(double)src.getHeight());
+	        finalw = (int)(finalh * factor);
+	    }   
+
+	    BufferedImage resizedImg = new BufferedImage(finalw, finalh, BufferedImage.TRANSLUCENT);
+	    Graphics2D g2 = resizedImg.createGraphics();
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(src, 0, 0, finalw, finalh, null);
+	    g2.dispose();
+	    return resizedImg;
 	}
 	
 	
