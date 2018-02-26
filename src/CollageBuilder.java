@@ -20,7 +20,7 @@ public class CollageBuilder {
 		for(int i=0;i<30;i++) {
 			urls.add("http://cdn.audubon.org/cdn/farfuture/RLIlWxqbInfEuN23V2H3hgR6R8M6O6BY47H_6m1ESE8/mtime:1497969000/sites/default/files/styles/hero_image/public/web_gbbc_sandhill_crane_3_bob-howdeshell_tn_2012_kk.jpg?itok=FfVIDhGx");
 		}
-		urls.add(null);
+		//urls.add(null);
 		cb.buildCollage(urls);
 		
 	}
@@ -80,7 +80,7 @@ public class CollageBuilder {
 			
 		}
 		
-		BufferedImage dummy = new BufferedImage(0, 0, 0);
+		BufferedImage dummy = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_3BYTE_BGR);
 		return dummy;
 	}
 	
