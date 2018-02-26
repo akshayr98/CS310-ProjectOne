@@ -2,15 +2,15 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Collage for topic X</title>
+		<title>Collage for topic $topicString</title>
 		<link rel="stylesheet" type="text/css" href="collage.css">
 	</head>
 	<body>
-		<h1 id="collagetitle">Collage for topic X</h1>
+		<h1 id="collagetitle">Collage for topic $topicString</h1>
 		<button type="button" class="button" id="exportbutton" onclick="alert('Export Initiated')">Export Collage</button>
 		<div id="collagecontainer">
 			<span id="collageinner">
-				<img id="collage" alt="Insufficient number of images found" src="images/exColage.png">
+				<img id="collage" alt="Insufficient number of images found" src=$imgURL>
 			</span>
 		</div>
 		<div id="formcontainer">
