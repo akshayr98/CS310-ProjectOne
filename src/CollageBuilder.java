@@ -1,3 +1,5 @@
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -86,11 +88,16 @@ public class CollageBuilder {
 	
 	
 	//takes in an image and rotates it randomly -45 to 45 degrees
-	public BufferedImage rotateImage(BufferedImage inImage,int degrees) {
+	public BufferedImage rotateImage(BufferedImage inImage,int inDegrees) {
 		
+	    AffineTransform transform = new AffineTransform();
+	    transform.rotate(Math.toRadians(inDegrees), inImage.getWidth()/2, inImage.getHeight()/2);
+	    AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+	    inImage = op.filter(inImage, null);
 		
 		return inImage;
 	}
+	
 	public Vector<Integer> generateDegrees(){
 		Vector<Integer> degrees = new Vector<Integer>();
 		Random rand = new Random();
