@@ -46,8 +46,10 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Vector;
 
 import org.json.JSONException;
@@ -84,7 +86,12 @@ public class ImageSourcer {
 		{
 			
 			// setting up search parameters
-			String qry = searchText.replace(' ', '+'); // Google search URL cannot include spaces, so spaces in the query need to be replaced by '+'
+			String qry = "";
+			try {
+				qry = URLEncoder.encode(searchText, "UTF-8");  // url encoding the raw search string
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 			String key = "AIzaSyCMLFYK6VlsPwvUKIwB2MvHvWJ_Pf-QAn4"; // this is an API key provided by Google
 			String cx  = "004843956391315063069:wnj8zpugysm"; // this is a custom search engine key provided by Google
 			String fileType = "png,jpg"; // desired file types
@@ -95,7 +102,7 @@ public class ImageSourcer {
 			// creating connection with Google Custom Search API - see API documentation for parameter details
 			HttpURLConnection conn = null;
 			try {
-				URL url = new URL ("https://www.googleapis.com/customsearch/v1?key=" +key+ "&cx=" +cx+ "&q=" +qry+"&fileType="+fileType+"&searchType="+searchType+"&alt=json&start="+startIndex);
+				URL url = new URL ("https://www.googleapis.com/customsearch/v1?key=" +key+ "&cx=" +cx+ "&q="+qry+"&fileType="+fileType+"&searchType="+searchType+"&alt=json&start="+startIndex);
 				conn = (HttpURLConnection) url.openConnection();
 				conn.setRequestMethod("GET");
 				conn.setRequestProperty("Accept", "application/json");
@@ -144,6 +151,11 @@ public class ImageSourcer {
 			System.out.println("loop end");
 		} // end offset and search loop
 		
+//		for(int i = 0; i < 30; i++)
+//		{
+//			System.out.println(imageURLs.get(i));
+//		}
+//		
 		// check that 30 image URLs were found
 		if(imageURLs.size() == 30)
 		{

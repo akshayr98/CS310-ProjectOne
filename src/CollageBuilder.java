@@ -8,6 +8,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
@@ -22,14 +23,15 @@ public class CollageBuilder {
 	
 	//TEST TO SEE IF THIS WORKS
 	public static void main(String args[]) {
-		CollageBuilder cb = new CollageBuilder();
+		//CollageBuilder cb = new CollageBuilder(1920,1080);
+		CollageBuilder cb = new CollageBuilder(1920,1080);
 		//cb.singleImageTest(cb);
 		cb.multiImageTest(cb);
 	}
 	
 	private void multiImageTest(CollageBuilder cb) {
 		ImageSourcer is = new ImageSourcer();
-		Vector<String> imageSource = is.getImages("dummy");
+		Vector<String> imageSource = is.getImages("whales");
 		BufferedImage collage = cb.buildCollage(imageSource);
 		
 		JFrame frame = new JFrame();
@@ -47,26 +49,29 @@ public class CollageBuilder {
 	private int collageHeight;
 	private int imagePadding;
 
-	//public CollageBuilder(int inBrowserWidth, int inBrowserHeight)
-	public CollageBuilder()
+	public CollageBuilder(int inBrowserWidth, int inBrowserHeight)
+	//public CollageBuilder()
 	{
 		//set for now will change in the future
-		browserWidth = 1920;
-		browserHeight = 1080;
-		
+		//browserWidth = 1920;
+		//browserHeight = 1080;
+		browserWidth = inBrowserWidth;
+		browserHeight = inBrowserHeight;
+		System.out.println(browserWidth +" " + browserHeight);
 		// padding as per stakeholder requirements
 		imagePadding = 3;
 		
 		// set collage dimensions as per stakeholder requirements
-		//this.collageWidth = (int) 0.7 * browserWidth;
-		//this.collageHeight = (int) 0.5 * browserHeight;
-		
-		this.collageWidth = 800;
-		this.collageHeight = 600;
+		this.collageWidth = (int) (0.7 * browserWidth);
+		this.collageHeight = (int) (0.5 * browserHeight);
+		System.out.println(collageWidth +" " + collageHeight);
+		//this.collageWidth = 800;
+		//this.collageHeight = 600;
 		
 		// ensure that collage meets minimum size requirements
 		this.collageWidth = Math.max(this.collageWidth, 800);
 		this.collageHeight = Math.max(this.collageHeight, 600); 	
+		System.out.println(collageWidth +" " + collageHeight);
 	}
 	
 //	public CollageBuilder(int inBrowserHeight, int inBrowserWidth, Vector<String> inImageSource) {
@@ -114,24 +119,34 @@ public class CollageBuilder {
 				int placeWidth=-(collageWidth/16), placeHeight=-(collageWidth/16);
 				for (int i=0;i<bufferedImageVec.size();i++) {
 					BufferedImage currImage = bufferedImageVec.get(i);
-					int currW = currImage.getWidth(), currH = currImage.getHeight();
+					System.out.println(i);
+					int currW = currImage.getWidth(); 
+					int currH = currImage.getHeight();
 					BufferedImage finalImage;
 					if(i==0) {										
 						// calculate scaled area of the image
-						scaledHeight = Math.sqrt(avgImgArea*25*currW/currH);
+						scaledHeight = Math.sqrt(avgImgArea*50*currW/currH);
 						scaledWidth = currW/currH*scaledHeight;
 						
 					//}else if(i==1){
 					}else if(i==29) {
 						// calculate scaled area of the image
-						scaledHeight = Math.sqrt((avgImgArea/25)*currW/currH);
+
+						scaledHeight = Math.sqrt((avgImgArea/50)*currW/currH);
 						scaledWidth = currW/currH*scaledHeight;
+
 //						System.out.println("scaledHeight is " +scaledHeight);
 //						System.out.println("scaledWidth is" + scaledWidth);
 					}else {
 						// calculate scaled area of the image
 						scaledHeight = Math.sqrt(avgImgArea*currW/currH);
 						scaledWidth = currW/currH*scaledHeight;
+					}
+					if(scaledWidth<=0) {
+						scaledWidth=1;
+					}
+					if(scaledHeight<=0) {
+						scaledHeight=1;
 					}
 					// scale and rotate the image accordingly
 					finalImage = getScaledImage(currImage, (int)scaledWidth, (int)scaledHeight);
@@ -184,8 +199,25 @@ public class CollageBuilder {
 	public Vector<BufferedImage> grabbingImages(Vector<String> imageSource) throws IOException{
 //	public Vector<BufferedImage> grabbingImages() throws IOException{
 		Vector<BufferedImage> bufferedImageVec = new Vector<BufferedImage>();
-		for(int i=0;i<imageSource.size();i++) {
-			bufferedImageVec.add(ImageIO.read(new URL(imageSource.get(i))));
+		for(int i=0;i<imageSource.size();i++) 
+		{
+			try {
+				//System.out.println(imageSource.get(i));
+				
+				URL url = new URL(imageSource.get(i));
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+				BufferedImage image = ImageIO.read(conn.getInputStream());
+				if(image != null)
+				{
+					bufferedImageVec.add(image);
+				}
+				else
+					System.out.println("null image: " + url);
+			} catch(IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		return bufferedImageVec;
 	}
