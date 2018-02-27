@@ -55,9 +55,12 @@ public class CollageBuilderServlet extends HttpServlet {
 		boolean collageBuildingFailed = false; // flag to indicate whether the collage building failed
 		
 		// if the imageSourcer returned 30 image URLs
-		if(imageSource != null)
+		if(imageSource != null || searchText == null || searchText.length() <= 0)
 		{
+			//TODO: change the width and height
 			CollageBuilder collageBuilder = new CollageBuilder(); // instantiate CollageBuilder object
+
+			
 			BufferedImage collage = collageBuilder.buildCollage(imageSource);			// CollageBuilder.buildCollage(imageSource) builds a collage out of the 30
 																						// images returned from the ImageSourcer and returns it as a BufferedImage.
 			collageManager.insertCollage(searchText, collage); // insert searchText (which will serve as title of collage) and created collage into the CollageManager.
