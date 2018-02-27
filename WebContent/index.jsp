@@ -10,16 +10,10 @@
 				console.log("DEBUG: doc ready");
 				$('#searchbutton').click(function(event)
 				{
-					var now = new Date();
-					console.log(now.getSeconds());
-					console.log(now.getMilliseconds());
 					event.preventDefault(); // prevent submit
 					console.log("DEBUG: submitted");
 					var searchtext = document.getElementById("searchtext").value; // get value from form
 					console.log(searchtext);
-					console.log("DEBUG: before ajax");
-					console.log(now.getSeconds());
-					console.log(now.getMilliseconds());
 					$.ajax(
 					{
 						type: "GET",
@@ -31,7 +25,7 @@
 						success: function(response)
 						{
 							console.log("success");
-							$("#content").empty().append(response);
+							window.location.replace("collageresult.jsp")
 						} // end success
 						
 					}); //end ajax
@@ -39,13 +33,9 @@
 					return false;
 				}); // end button click 
 				
-				var searchbutton = document.querySelector("#searchbutton");
+		 		var searchbutton = document.querySelector("#searchbutton");
 				var formAction = document.querySelector("#searchform");
 				searchbutton.setAttribute("disabled", "true");
-				searchbutton.onclick=function() {
-					formAction.action = "CollageBuilderServlet";
-					formAction.action = submit();
-				}
 				var searchtext = document.querySelector("#searchtext");
 				searchtext.onkeyup=function() {
 					if (searchtext.value.length > 0) {
@@ -61,10 +51,10 @@
 	</head>
 	<body>
 		<div id="content">
-			<form id = "searchform">
+			<form id="searchform">
 				<input type="text" id="searchtext" placeholder="Enter topic">
 				<span>
-					<button type = "button" id="searchbutton" disabled="disabled">Build Collage</button>
+					<button type="button" id="searchbutton" disabled="disabled">Build Collage</button>
 				</span>
 			</form>
 		</div>

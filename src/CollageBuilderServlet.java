@@ -45,7 +45,9 @@ public class CollageBuilderServlet extends HttpServlet {
 		
 		// parsing user input
 		String searchText = request.getParameter("searchtext"); // get search query from ajax call
-		
+		System.out.println("searchtext1:" + searchText);
+
+		System.out.println("searchtext2:" + searchText);
 		// obtaining images from google
 		ImageSourcer imageSourcer = new ImageSourcer(); // instantiate ImageSourcer object
 		Vector<String> imageSource = imageSourcer.getImages(searchText); // ImageSourcer.getImages(searchText) searches Google Images with searchText as the query
@@ -58,7 +60,7 @@ public class CollageBuilderServlet extends HttpServlet {
 		if(imageSource != null && searchText != null && searchText.length() > 0)
 		{
 			//TODO: change the width and height
-			CollageBuilder collageBuilder = new CollageBuilder(); // instantiate CollageBuilder object
+			CollageBuilder collageBuilder = new CollageBuilder(1920, 1080); // instantiate CollageBuilder object
 
 			
 			BufferedImage collage = collageBuilder.buildCollage(imageSource);			// CollageBuilder.buildCollage(imageSource) builds a collage out of the 30
@@ -69,7 +71,7 @@ public class CollageBuilderServlet extends HttpServlet {
 		{
 			collageBuildingFailed = true;
 		}
-		
+
 		
 		// construct HTML code to pass back to client as response text
 		String responseText; // string to hold raw text representation of response text
@@ -77,21 +79,22 @@ public class CollageBuilderServlet extends HttpServlet {
 		HTMLGenerator htmlGenerator = new HTMLGenerator(collageManager); // instantiate HTMLGenerator object. Takes CollageManager pointer in constructor.
 		if(collageBuildingFailed)
 		{
-			responseText = htmlGenerator.generateHTML(searchText); // if collage building was unsuccesful, call the generateHTML(String) function, which will generate the HTML to display
+			responseText = htmlGenerator.generateHTML(searchText); // if collage building was unsuccessful, call the generateHTML(String) function, which will generate the HTML to display
 													// all previous collages and indicate that the most recent collage building failed.
 		}
 		else // if collage building did not fail
 		{
-			responseText = htmlGenerator.generateHTML(); // if collage building was succesful, call the generateHTML() function, which will generate the HTML to display 
+			responseText = htmlGenerator.generateHTML(); // if collage building was successful, call the generateHTML() function, which will generate the HTML to display 
 											// all previous collages with the most recent one in the main collage display area
 		}
 		
 		// set response text settings
-    	response.setContentType("text/plain");
-    	response.setCharacterEncoding("UTF-8");
-    	
-    	// set response text to responseText string
-    	response.getWriter().write(responseText);
+	    	response.setContentType("text/plain");
+	    	response.setCharacterEncoding("UTF-8");
+	    	System.out.println("Servlet complete");
+	    	// set response text to responseText string
+	    	response.getWriter().write("success");
+	    	
     	
 	} // end service
 

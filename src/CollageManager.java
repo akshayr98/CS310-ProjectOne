@@ -3,13 +3,13 @@ import java.util.Vector;
 
 public class CollageManager {
 
-	private Vector<String> collageTitles;
-	private Vector<BufferedImage> collages;
+	private Vector<String> collageTitles = new Vector<String>();
+	private Vector<BufferedImage> collages = new Vector<BufferedImage>();
 	private int indexOfCollageToDisplay;
 	
 	public void insertCollage(String title, BufferedImage collage) {
-		collageTitles.addElement(title);
-		collages.addElement(collage);
+		collageTitles.add(title);
+		collages.add(collage);
 	}
 	
 	public Vector<String> getCollageTitles() {

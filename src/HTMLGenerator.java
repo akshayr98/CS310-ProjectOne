@@ -29,7 +29,7 @@ public class HTMLGenerator {
 	// Generates HTML page when a new collage is created
 	public String generateHTML() {
 		// Instantiate file object from template HTML file
-		File collageTemplateFile = new File("WebContent/collagetemplate.html");
+		File collageTemplateFile = new File("/Users/Stanley/Desktop/$$/School/Year 3/Year 3 Semester 2/CSCI 310/CSCI 310 Workspace/CS310-ProjectOne/WebContent/collagetemplate.jsp");
 		
 		// Vector of collages created in session
 		Vector<BufferedImage> collages = collageManager.getCollages();
@@ -39,8 +39,13 @@ public class HTMLGenerator {
 			String htmlString = FileUtils.readFileToString(collageTemplateFile, StandardCharsets.UTF_8);
 			// Grabs the currently displayed collage's title
 			String currentCollageTitle = collageManager.getCollageTitles().get(collageIndex);
+			System.out.println("ALL TITLES: ");
+			for (int i = 0; i < collageManager.getCollageTitles().size(); i++) {
+				System.out.println(collageManager.getCollageTitles().get(i));
+			}
 			// Replaces title placeholder with current collage's title
 			htmlString = htmlString.replace("$topicString", currentCollageTitle);
+			System.out.println("currentCollageTitle IS: " + currentCollageTitle);
 			
 			ByteArrayOutputStream byteArrayOS; // Output stream to convert BufferedImage to ByteArray
 			byte[] imageBytes; // ByteArray containing the BufferedImage in bytes
@@ -62,24 +67,11 @@ public class HTMLGenerator {
 				imageStringVector.add(base64String);
 			}
 			
-			/*for (int i = 0; i < testVector.size(); i++) {
-				byteArrayOS = new ByteArrayOutputStream();
-				// Writes the BufferedImage to the output stream in PNG format
-				ImageIO.write(testVector.get(i), "png", byteArrayOS);
-				// Converts the output stream to a ByteArray
-				imageBytes = byteArrayOS.toByteArray();
-				// Encoding of ByteArray
-				imageBytes = Base64.getEncoder().encode(imageBytes);
-				// Converts ByteArray to base64 string
-				base64String = new String(imageBytes, "UTF-8");
-				// Adds base64 string image to string vector
-				imageStringVector.add(base64String);
-			}*/
-			
 			// Creates HTML string to display img
-			String displayImgString = "<img id=\"collage\" src" + "\"data:image/png;base64, " + imageStringVector.get(collageIndex) + "\"" + ">";
+			String displayImgString = "<img id=\"collage\" src=" + "\"data:image/png;base64, " + imageStringVector.get(collageIndex) + "\"" + ">";
 			// Replaces image URL placeholder
 			htmlString = htmlString.replace("$collageSpaceContents", displayImgString);
+			System.out.println("currentCollageTitle IS: " + currentCollageTitle);
 			
 			String previousCollageURLs = "<table><tbody><tr>";
 			// Iterates through image string vector // SKIPS LAST INDEX BC LAST INDEX IS CURRENT COLLAGE
@@ -96,10 +88,11 @@ public class HTMLGenerator {
 			}
 			previousCollageURLs = previousCollageURLs + "</tr></tbody></table>";
 			htmlString = htmlString.replace("$tableContents", previousCollageURLs);
+			System.out.println("DEBUG: " + currentCollageTitle);
 			// Writes new htmlString to file
-			//FileUtils.writeStringToFile(new File("WebContent/collageresult.html"), htmlString, StandardCharsets.UTF_8);
-			// Return HTML String
-			return htmlString;
+			FileUtils.writeStringToFile(new File("/Users/Stanley/Desktop/$$/School/Year 3/Year 3 Semester 2/CSCI 310/CSCI 310 Workspace/CS310-ProjectOne/WebContent/collageresult.jsp"), htmlString, StandardCharsets.UTF_8);
+			// Return Dummy
+			return "dummy";
 		}
 		catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -109,13 +102,17 @@ public class HTMLGenerator {
 
 	// Generates HTML page when insufficient images found
 	public String generateHTML(String searchText) {
-		// Instantiate file object from template HTML file
-		File collageTemplateFile = new File("WebContent/collagetemplate.html");
 		try {
+			// Instantiate file object from template HTML file
+			System.out.println("Working Directory = " +
+		              System.getProperty("user.dir"));
+			File collageTemplateFile = new File("/Users/Stanley/Desktop/$$/School/Year 3/Year 3 Semester 2/CSCI 310/CSCI 310 Workspace/CS310-ProjectOne/WebContent/collagetemplate.jsp");
 			// Converts File to String
 			String htmlString = FileUtils.readFileToString(collageTemplateFile, StandardCharsets.UTF_8);
 			// Replaces title placeholder with search text
-			htmlString = htmlString.replace("$topicString", searchText); 
+			System.out.println("searchText" + searchText);
+			htmlString = htmlString.replace("$topicString", searchText);
+			
 			
 			Vector<BufferedImage> collages = collageManager.getCollages(); // Vector of collages created in session
 			ByteArrayOutputStream byteArrayOS; // Output stream to convert BufferedImage to ByteArray
@@ -153,9 +150,9 @@ public class HTMLGenerator {
 			htmlString = htmlString.replace("$tableContents", previousCollageURLs);
 			
 			// Writes new htmlString to file
-			//FileUtils.writeStringToFile(new File("WebContent/collageresult.html"), htmlString, StandardCharsets.UTF_8);
-			// Return HTML String
-			return htmlString;
+			FileUtils.writeStringToFile(new File("/Users/Stanley/Desktop/$$/School/Year 3/Year 3 Semester 2/CSCI 310/CSCI 310 Workspace/CS310-ProjectOne/WebContent/collageresult.jsp"), htmlString, StandardCharsets.UTF_8);
+			// Return Dummy String
+			return "Dummy";
 		}
 		catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -166,7 +163,7 @@ public class HTMLGenerator {
 	// Generates HTML page when previous collage is clicked
 	public String generateHTMLForPreviousCollage() {
 		// Instantiate file object from template HTML file
-		File collageTemplateFile = new File("WebContent/collagetemplate.html");
+		File collageTemplateFile = new File("/Users/Stanley/Desktop/$$/School/Year 3/Year 3 Semester 2/CSCI 310/CSCI 310 Workspace/CS310-ProjectOne/WebContent/collagetemplate.jsp");
 		try {
 			int collageIndex = collageManager.getIndex();
 			Vector<BufferedImage> collages = collageManager.getCollages(); // Vector of collages created in session
@@ -218,9 +215,9 @@ public class HTMLGenerator {
 			previousCollageURLs = previousCollageURLs + "</tr></tbody></table>";
 			htmlString = htmlString.replace("$tableContents", previousCollageURLs);
 			// Writes new htmlString to file
-			//FileUtils.writeStringToFile(new File("WebContent/collageresult.html"), htmlString, StandardCharsets.UTF_8);
+			FileUtils.writeStringToFile(new File("/Users/Stanley/Desktop/$$/School/Year 3/Year 3 Semester 2/CSCI 310/CSCI 310 Workspace/CS310-ProjectOne/WebContent/collageresult.jsp"), htmlString, StandardCharsets.UTF_8);
 			// Return HTML String
-			return htmlString;
+			return "dummY";
 		}
 		catch (IOException ioe) {
 			ioe.printStackTrace();
