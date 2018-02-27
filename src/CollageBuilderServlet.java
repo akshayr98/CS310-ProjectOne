@@ -55,7 +55,7 @@ public class CollageBuilderServlet extends HttpServlet {
 		boolean collageBuildingFailed = false; // flag to indicate whether the collage building failed
 		
 		// if the imageSourcer returned 30 image URLs
-		if(imageSource != null || searchText == null || searchText.length() <= 0)
+		if(imageSource != null && searchText != null && searchText.length() > 0)
 		{
 			//TODO: change the width and height
 			CollageBuilder collageBuilder = new CollageBuilder(); // instantiate CollageBuilder object
