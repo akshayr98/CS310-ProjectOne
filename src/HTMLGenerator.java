@@ -103,22 +103,23 @@ public class HTMLGenerator {
 				imageStringVector.add(base64String);
 			}*/
 			
-			// Image URL for current collage to display
-			String displayedImgURL = "\"data:image/png;base64, " + imageStringVector.get(collageIndex) + "\"";
+			// Creates HTML string to display img
+			String displayImgString = "<img id=\"collage\" src" + "\"data:image/png;base64, " + imageStringVector.get(collageIndex) + "\"" + ">";
 			// Replaces image URL placeholder
-			jspString = jspString.replace("$imgURL", displayedImgURL);
+			jspString = jspString.replace("$collageSpaceContents", displayImgString);
 			
 			String previousCollageURLs = "<table><tbody><tr>";
-			// Iterates through image string vector
-			for (int i = 0; i < imageStringVector.size(); i++) {
-				if (i == collageIndex) {
-					continue;
-				}
-				else {
+			// Iterates through image string vector // SKIPS LAST INDEX BC LAST INDEX IS CURRENT COLLAGE
+			for (int i = 0; i < imageStringVector.size() - 1; i++) {
+				
+//				if (i == collageIndex) {
+//					continue;
+//				}
+//				else {
 					// Replaces placeholder with previous collage's URL
 					previousCollageURLs = previousCollageURLs + "<td><img id=\"previousCollage\" src=\"" + "data:image/png;base64, "
 							+ imageStringVector.get(i) + "\"></td>";
-				}
+//				}
 			}
 			previousCollageURLs = previousCollageURLs + "</tr></tbody></table>";
 			jspString = jspString.replace("$tableContents", previousCollageURLs);
@@ -163,10 +164,21 @@ public class HTMLGenerator {
 				// Adds base64 string image to string vector
 				imageStringVector.add(base64String);
 			}
-			// Empty image URL to display so error message will show
-			String displayedImgURL = "\"\"";
+			// Creates HTML string to display error message
+			String displayedErrorMessage = "<p>Insufficient number of images found</p>";
 			// Replace image URL placeholder
-			jspString = jspString.replace("$imgURL", displayedImgURL);
+			jspString = jspString.replace("$collageSpaceContents", displayedErrorMessage);
+			
+			String previousCollageURLs = "<table><tbody><tr>";
+			// Iterates through image string vector
+			for (int i = 0; i < imageStringVector.size(); i++) {
+				// Replaces placeholder with previous collage's URL
+				previousCollageURLs = previousCollageURLs + "<td><img id=\"previousCollage\" src=\"" + "data:image/png;base64, "
+						+ imageStringVector.get(i) + "\"></td>";
+			}
+			previousCollageURLs = previousCollageURLs + "</tr></tbody></table>";
+			jspString = jspString.replace("$tableContents", previousCollageURLs);
+			
 			// Writes new jspString to file
 			//FileUtils.writeStringToFile(new File("WebContent/collageresult.jsp"), jspString, StandardCharsets.UTF_8);
 			// Return JSP String
@@ -211,10 +223,27 @@ public class HTMLGenerator {
 				// Adds base64 string image to string vector
 				imageStringVector.add(base64String);
 			}
-			// Image URL for current collage to display
-			String displayedImgURL = "\"data:image/png;base64, " + imageStringVector.get(collageIndex) + "\"";
+			// Creates HTML string to display img
+			String displayImgString = "<img id=\"collage\" src" + "\"data:image/png;base64, " + imageStringVector.get(collageIndex) + "\"" + ">";
 			// Replace image URL placeholder
-			jspString = jspString.replace("$tableContents", displayedImgURL);
+			jspString = jspString.replace("$tableContents", displayImgString);
+			
+			/*  PREVIOUS COLLAGE SELECTOR  */
+			String previousCollageURLs = "<table><tbody><tr>";
+			// Iterates through image string vector
+			for (int i = 0; i < imageStringVector.size(); i++) {
+				// Does not add currently displayed collage to previous collage selector
+				if (i == collageIndex) {
+					continue;
+				}
+				else {
+					// Replaces placeholder with previous collage's URL
+					previousCollageURLs = previousCollageURLs + "<td><img id=\"previousCollage\" src=\"" + "data:image/png;base64, "
+							+ imageStringVector.get(i) + "\"></td>";
+				}
+			}
+			previousCollageURLs = previousCollageURLs + "</tr></tbody></table>";
+			jspString = jspString.replace("$tableContents", previousCollageURLs);
 			// Writes new jspString to file
 			//FileUtils.writeStringToFile(new File("WebContent/collageresult.jsp"), jspString, StandardCharsets.UTF_8);
 			// Return JSP String

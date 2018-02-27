@@ -2,7 +2,7 @@
 <button type="button" class="button" id="exportbutton" onclick="alert('Export Initiated')">Export Collage</button>
 <div id="collagecontainer">
 	<span id="collageinner">
-		<img id="collage" alt="Insufficient number of images found" src=$imgURL>
+		$collageSpaceContents
 	</span>
 </div>
 <div id="formcontainer">
