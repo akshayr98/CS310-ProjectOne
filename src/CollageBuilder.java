@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.util.Collections;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -111,8 +112,19 @@ public class CollageBuilder {
 		if(checkValid(imageSource)) {
 			try {
 				Vector<BufferedImage> bufferedImageVec = grabbingImages(imageSource);
-				Vector<Integer> randDegrees = generateDegrees();
+				int minDegree = 7;
+				Vector<Integer> randDegrees = null;
 				
+				//generating random numbers until the mindegrees are less than 6
+				while(minDegree>6) {
+					randDegrees = generateDegrees();
+					int indexOfSmallestDegree = getSmallestDegree(randDegrees);
+					Collections.swap(randDegrees, 0, indexOfSmallestDegree);
+//					for(int i=0;i<randDegrees.size();i++) {
+//						System.out.println(randDegrees.get(i));
+//					}
+					minDegree = randDegrees.get(0);
+				}
 				double avgImgArea = collageWidth*collageHeight/20;
 				double scaledWidth=0, scaledHeight=0;
 				
@@ -123,23 +135,40 @@ public class CollageBuilder {
 					BufferedImage currImage = bufferedImageVec.get(i);
 					int currW = currImage.getWidth(), currH = currImage.getHeight();
 					BufferedImage finalImage;
-					
-					// calculate scaled area of the image
-					scaledHeight = Math.sqrt(avgImgArea*currW/currH);
-					scaledWidth = currW/currH*scaledHeight;
-					
+					if(i==0) {										
+						// calculate scaled area of the image
+						scaledHeight = Math.sqrt(avgImgArea*20*currW/currH);
+						scaledWidth = currW/currH*scaledHeight;
+						
+					}else if(i==1){
+						// calculate scaled area of the image
+						scaledHeight = Math.sqrt((avgImgArea/20)*currW/currH);
+						scaledWidth = currW/currH*scaledHeight;
+//						System.out.println("scaledHeight is " +scaledHeight);
+//						System.out.println("scaledWidth is" + scaledWidth);
+					}else {
+						// calculate scaled area of the image
+						scaledHeight = Math.sqrt(avgImgArea*currW/currH);
+						scaledWidth = currW/currH*scaledHeight;
+					}
 					// scale and rotate the image accordingly
 					finalImage = getScaledImage(currImage, (int)scaledWidth, (int)scaledHeight);
-					finalImage = rotateImage(finalImage, randDegrees.get(i));
-					
+					finalImage = rotateImage(finalImage, randDegrees.get(i));	
 					// place the image onto the canvas
-					graphic.drawImage(finalImage, placeWidth, placeHeight, null);
+					if(i==0) {
+						
+						graphic.drawImage(finalImage, -100,-100, null);
+					}else {
+						graphic.drawImage(finalImage, placeWidth, placeHeight, null);
+					}
 					
 					// TODO: fix naive placement and hard coded constants
-					placeWidth += scaledWidth*3/4;
-					if (placeWidth > collageWidth) {
-						placeWidth = -50;
-						placeHeight += scaledHeight*3/4;
+					if(i!=1||i!=0) {
+						placeWidth += scaledWidth*3/4;
+						if (placeWidth > collageWidth) {
+							placeWidth = -50;
+							placeHeight += scaledHeight*3/4;
+						}
 					}
 				}
 				
@@ -211,6 +240,19 @@ public class CollageBuilder {
 			System.out.println(degrees.get(i));
 		}*/
 		return degrees;
+	}
+	
+	//getting smallest positive degree
+	public int getSmallestDegree(Vector<Integer> inDegreeVec) {
+		int min = 45;
+		int index = -1;
+		for(int i=0;i<inDegreeVec.size();i++) {
+			if(min>inDegreeVec.get(i)&&inDegreeVec.get(i)>=0) {
+				index = i;
+				min = inDegreeVec.get(i);
+			}
+		}
+		return index;
 	}
 	
 	// scales the image based on desired width and height ratio of original image
