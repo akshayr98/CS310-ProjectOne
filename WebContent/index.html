@@ -39,32 +39,39 @@
 					return false;
 				}); // end button click 
 				
-				
-			}
-			
-			$('#searchtext').on('keyup', function validate() {
-			    var text = document.forms["searchform"]["searchtext"].value;
-			    if (text == "") {
-			    		var button = document.getElementById("searchbutton");
-			    		button.setAttribute("disabled", "disabled");
-			    }
-			    else {
-			    		button.removeAttribute("disabled");
-			    }
-			})
-			
-			)// end doc ready
+				var searchbutton = document.querySelector("#searchbutton");
+				var formAction = document.querySelector("#searchform");
+				searchbutton.setAttribute("disabled", "true");
+				searchbutton.onclick=function() {
+					formAction.action = "CollageBuilderServlet";
+					formAction.action = submit();
+				}
+				var searchtext = document.querySelector("#searchtext");
+				searchtext.onkeyup=function() {
+					if (searchtext.value.length > 0) {
+						searchbutton.removeAttribute("disabled");
+					}
+					else {
+						searchbutton.setAttribute("disabled", "true");
+					}
+				}
+			})// end doc ready
 		</script>
 		<link rel="stylesheet" type="text/css" href="index.css">
 	</head>
 	<body>
 		<div id="content">
-			<form name="searchform">
-				<input type="text" name="searchtext" id="searchtext" placeholder="Enter topic">
+			<form id = "searchform">
+				<input type="text" id="searchtext" placeholder="Enter topic">
 				<span>
-					<input type="submit" value="Build Collage" id="searchbutton"></input>
+					<button type = "button" id="searchbutton" disabled="disabled">Build Collage</button>
 				</span>
 			</form>
 		</div>
+		
 	</body>
 </html>
+
+
+
+
