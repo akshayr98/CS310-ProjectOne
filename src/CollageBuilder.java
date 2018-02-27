@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -16,14 +17,28 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-
-
-
 public class CollageBuilder {
 	
 	//TEST TO SEE IF THIS WORKS
 	public static void main(String args[]) {
 		CollageBuilder cb = new CollageBuilder();
+		//cb.singleImageTest(cb);
+		cb.multiImageTest(cb);
+	}
+	
+	private void multiImageTest(CollageBuilder cb) {
+		ImageSourcer is = new ImageSourcer();
+		Vector<String> imageSource = is.getImages("dummy");
+		BufferedImage collage = cb.buildCollage(imageSource);
+		
+		JFrame frame = new JFrame();
+		frame.getContentPane().setLayout(new FlowLayout());
+		frame.getContentPane().add(new JLabel(new ImageIcon(collage)));
+		frame.pack();
+		frame.setVisible(true);
+	}
+	
+	private void singleImageTest(CollageBuilder cb) {
 		Vector<String> urls = new Vector<String>();
 		for(int i=0;i<30;i++) {
 			urls.add("http://cdn.audubon.org/cdn/farfuture/RLIlWxqbInfEuN23V2H3hgR6R8M6O6BY47H_6m1ESE8/mtime:1497969000/sites/default/files/styles/hero_image/public/web_gbbc_sandhill_crane_3_bob-howdeshell_tn_2012_kk.jpg?itok=FfVIDhGx");
@@ -47,7 +62,6 @@ public class CollageBuilder {
 		frame.setVisible(true);
 
 		//cb.buildCollage(urls);
-		
 	}
 	
 	private int browserHeight;
@@ -70,8 +84,7 @@ public class CollageBuilder {
 		
 		// ensure that collage meets minimum size requirements
 		this.collageWidth = Math.max(this.collageWidth, 800);
-		this.collageHeight = Math.max(this.collageHeight, 600); 
-		
+		this.collageHeight = Math.max(this.collageHeight, 600); 	
 	}
 	
 //	public CollageBuilder(int inBrowserHeight, int inBrowserWidth, Vector<String> inImageSource) {
@@ -87,28 +100,56 @@ public class CollageBuilder {
 //	}
 	
 	public BufferedImage buildCollage(Vector<String> imageSource){
-		if(!checkValid(imageSource)) {
-			//returning dummy image if we do not have 30 images
-			return new BufferedImage(0,0,0);
-		}else {
+		// TYPE_INT_ARGB means 4 bytes per pixel with alpha channel
+		BufferedImage canvas = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_INT_ARGB);
+		
+		// Create a Graphics2D object to composite images
+		Graphics2D graphic = canvas.createGraphics();
+		graphic.setColor(Color.white);
+		graphic.fillRect(0, 0, collageWidth, collageHeight);
+		
+		if(checkValid(imageSource)) {
 			try {
 				Vector<BufferedImage> bufferedImageVec = grabbingImages(imageSource);
 				Vector<Integer> randDegrees = generateDegrees();
-				for(int i=0;i<randDegrees.size();i++) {
-					System.out.println(randDegrees.get(i));
+				
+				double avgImgArea = collageWidth*collageHeight/20;
+				double scaledWidth=0, scaledHeight=0;
+				
+				// TODO: change these placements
+				int placeWidth=-50, placeHeight=-50;
+				
+				for (int i=0;i<bufferedImageVec.size();i++) {
+					BufferedImage currImage = bufferedImageVec.get(i);
+					int currW = currImage.getWidth(), currH = currImage.getHeight();
+					BufferedImage finalImage;
+					
+					// calculate scaled area of the image
+					scaledHeight = Math.sqrt(avgImgArea*currW/currH);
+					scaledWidth = currW/currH*scaledHeight;
+					
+					// scale and rotate the image accordingly
+					finalImage = getScaledImage(currImage, (int)scaledWidth, (int)scaledHeight);
+					finalImage = rotateImage(finalImage, randDegrees.get(i));
+					
+					// place the image onto the canvas
+					graphic.drawImage(finalImage, placeWidth, placeHeight, null);
+					
+					// TODO: fix naive placement and hard coded constants
+					placeWidth += scaledWidth*3/4;
+					if (placeWidth > collageWidth) {
+						placeWidth = -50;
+						placeHeight += scaledHeight*3/4;
+					}
 				}
-				System.out.println("Printing");
 				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
 		}
 		
-		BufferedImage canvas = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_3BYTE_BGR);
 		return canvas;
 	}
-	
 	
 	//iterates through the vector and checks if all strings are null 
 	//if one is null return false
@@ -130,60 +171,66 @@ public class CollageBuilder {
 		for(int i=0;i<imageSource.size();i++) {
 			bufferedImageVec.add(ImageIO.read(new URL(imageSource.get(i))));
 		}
-		
-		
-		
-		//example of how to do it
-		//BufferedImage image = ImageIO.read(new URL(imageUrl));
-		
-		
 		return bufferedImageVec;
 	}
 	
-	
-	
-	
 	//takes in an image and rotates it randomly -45 to 45 degrees
 	public BufferedImage rotateImage(BufferedImage inImage,int inDegrees) {
-		
-	    AffineTransform transform = new AffineTransform();
+	    /*AffineTransform transform = new AffineTransform();
 	    transform.rotate(Math.toRadians(inDegrees), inImage.getWidth()/2, inImage.getHeight()/2);
 	    AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
 	    inImage = op.filter(inImage, null);
+	    return inImage;*/
+	    
+		double rad = Math.toRadians(inDegrees);
+		double sin = Math.abs(Math.sin(rad)), cos = Math.abs(Math.cos(rad));
+	    int w = inImage.getWidth(), h = inImage.getHeight();
+	    
+	    int rotWidth = (int)Math.floor(w*cos+h*sin), rotHeight = (int) Math.floor(h*cos + w*sin);
 		
-		return inImage;
+	    BufferedImage rotatedImage = new BufferedImage(rotWidth, rotHeight, 
+	    		BufferedImage.TRANSLUCENT);
+	    Graphics2D graphic = rotatedImage.createGraphics();
+	    graphic.rotate(Math.toRadians(inDegrees), rotWidth/2, rotHeight/2);
+	    graphic.drawImage(inImage, (rotWidth-w)/2, (rotHeight-h)/2, null);
+        graphic.dispose();
+        return rotatedImage;
 	}
-	
 	
 	public Vector<Integer> generateDegrees(){
 		Vector<Integer> degrees = new Vector<Integer>();
 		Random rand = new Random();
 		
 		for(int i=0;i<30;i++) {
-			int num = rand.nextInt(90)+1;
+			int num = rand.nextInt(91);
 			num -= 45;
 			degrees.add(num);
 		}
+		
+		/*for (int i=0;i<30;i++) {
+			System.out.println(degrees.get(i));
+		}*/
 		return degrees;
 	}
-	private BufferedImage getScaledImage(BufferedImage src, int w, int h){
-	    int finalw = w;
-	    int finalh = h;
-	    double factor = 1.0d;
-	    if(src.getWidth() > src.getHeight()){
-	        factor = ((double)src.getHeight()/(double)src.getWidth());
-	        finalh = (int)(finalw * factor);                
-	    }else{
-	        factor = ((double)src.getWidth()/(double)src.getHeight());
-	        finalw = (int)(finalh * factor);
-	    }   
-
-	    BufferedImage resizedImg = new BufferedImage(finalw, finalh, BufferedImage.TRANSLUCENT);
-	    Graphics2D g2 = resizedImg.createGraphics();
-	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-	    g2.drawImage(src, 0, 0, finalw, finalh, null);
-	    g2.dispose();
-	    return resizedImg;
+	
+	// scales the image based on desired width and height ratio of original image
+	private BufferedImage getScaledImage(BufferedImage src, int width, int height){
+		int srcWidth = src.getWidth();
+		int srcHeight = src.getHeight();
+		BufferedImage scaledImage = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
+		
+		// Scale image according to the ratio of the original image to new scaled image
+		AffineTransform scaleOp = new AffineTransform();
+		scaleOp.scale(width/(double)srcWidth, height/(double)srcHeight);
+	
+		// Use Graphics2D to complete the scaling
+		Graphics2D graphic = scaledImage.createGraphics();
+		graphic.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        graphic.setTransform(scaleOp);
+        graphic.drawImage(src, 0, 0, null);
+        graphic.dispose();
+		
+        return scaledImage;
 	}
 	
 	
