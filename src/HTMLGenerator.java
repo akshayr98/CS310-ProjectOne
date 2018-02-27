@@ -7,7 +7,6 @@ import java.util.Base64;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 
@@ -27,47 +26,21 @@ public class HTMLGenerator {
 		this.collageManager = collageManager;
 	}
 	
-	// Generates jsp page when a new collage is created
-	public String generatejsp() {
+	// Generates HTML page when a new collage is created
+	public String generateHTML() {
+		// Instantiate file object from template HTML file
+		File collageTemplateFile = new File("WebContent/collagetemplate.html");
 		
-		
-		/*try {
-			BufferedImage bImage1 = ImageIO.read(new File("WebContent/images/exCollage.png"));
-			BufferedImage bImage2 = ImageIO.read(new File("WebContent/images/greybox.jpg"));
-			BufferedImage bImage3 = ImageIO.read(new File("WebContent/images/greybox.jpg"));
-			BufferedImage bImage4 = ImageIO.read(new File("WebContent/images/greybox.jpg"));
-			Vector<BufferedImage> testVector = new Vector<BufferedImage>();
-			testVector.add(bImage1);
-			testVector.add(bImage2);
-			testVector.add(bImage3);
-			testVector.add(bImage4);
-			testVector.add(bImage1);
-			testVector.add(bImage1);
-			Vector<String> testVector2 = new Vector<String>();
-			testVector2.add("hi");
-			testVector2.add("hi2");
-			testVector2.add("hi3");
-			testVector2.add("hi4");
-			testVector2.add("hi5");
-			testVector2.add("hi6");
-			*/
-		
-		
-		
-		
-		// Instantiate file object from template jsp file
-		File collageTemplateFile = new File("WebContent/collagetemplate.jsp");
 		// Vector of collages created in session
 		Vector<BufferedImage> collages = collageManager.getCollages();
 		try {
 			int collageIndex = collages.size() - 1;
 			// Converts File to String
-			String jspString = FileUtils.readFileToString(collageTemplateFile, StandardCharsets.UTF_8);
+			String htmlString = FileUtils.readFileToString(collageTemplateFile, StandardCharsets.UTF_8);
 			// Grabs the currently displayed collage's title
-			//String currentCollageTitle = collageManager.getCollageTitles().get(collageManager.getCollageTitles().size() - 1); // ACTUAL LINE
 			String currentCollageTitle = collageManager.getCollageTitles().get(collageIndex);
 			// Replaces title placeholder with current collage's title
-			jspString = jspString.replace("$topicString", currentCollageTitle);
+			htmlString = htmlString.replace("$topicString", currentCollageTitle);
 			
 			ByteArrayOutputStream byteArrayOS; // Output stream to convert BufferedImage to ByteArray
 			byte[] imageBytes; // ByteArray containing the BufferedImage in bytes
@@ -106,7 +79,7 @@ public class HTMLGenerator {
 			// Creates HTML string to display img
 			String displayImgString = "<img id=\"collage\" src" + "\"data:image/png;base64, " + imageStringVector.get(collageIndex) + "\"" + ">";
 			// Replaces image URL placeholder
-			jspString = jspString.replace("$collageSpaceContents", displayImgString);
+			htmlString = htmlString.replace("$collageSpaceContents", displayImgString);
 			
 			String previousCollageURLs = "<table><tbody><tr>";
 			// Iterates through image string vector // SKIPS LAST INDEX BC LAST INDEX IS CURRENT COLLAGE
@@ -122,11 +95,11 @@ public class HTMLGenerator {
 //				}
 			}
 			previousCollageURLs = previousCollageURLs + "</tr></tbody></table>";
-			jspString = jspString.replace("$tableContents", previousCollageURLs);
-			// Writes new jspString to file
-			//FileUtils.writeStringToFile(new File("WebContent/collageresult.jsp"), jspString, StandardCharsets.UTF_8);
-			// Return JSP String
-			return jspString;
+			htmlString = htmlString.replace("$tableContents", previousCollageURLs);
+			// Writes new htmlString to file
+			//FileUtils.writeStringToFile(new File("WebContent/collageresult.html"), htmlString, StandardCharsets.UTF_8);
+			// Return HTML String
+			return htmlString;
 		}
 		catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -134,15 +107,15 @@ public class HTMLGenerator {
 		}
 	}
 
-	// Generates jsp page when insufficient images found
-	public String generatejsp(String searchText) {
-		// Instantiate file object from template jsp file
-		File collageTemplateFile = new File("WebContent/collagetemplate.jsp");
+	// Generates HTML page when insufficient images found
+	public String generateHTML(String searchText) {
+		// Instantiate file object from template HTML file
+		File collageTemplateFile = new File("WebContent/collagetemplate.html");
 		try {
 			// Converts File to String
-			String jspString = FileUtils.readFileToString(collageTemplateFile, StandardCharsets.UTF_8);
+			String htmlString = FileUtils.readFileToString(collageTemplateFile, StandardCharsets.UTF_8);
 			// Replaces title placeholder with search text
-			jspString = jspString.replace("$topicString", searchText); 
+			htmlString = htmlString.replace("$topicString", searchText); 
 			
 			Vector<BufferedImage> collages = collageManager.getCollages(); // Vector of collages created in session
 			ByteArrayOutputStream byteArrayOS; // Output stream to convert BufferedImage to ByteArray
@@ -167,7 +140,7 @@ public class HTMLGenerator {
 			// Creates HTML string to display error message
 			String displayedErrorMessage = "<p>Insufficient number of images found</p>";
 			// Replace image URL placeholder
-			jspString = jspString.replace("$collageSpaceContents", displayedErrorMessage);
+			htmlString = htmlString.replace("$collageSpaceContents", displayedErrorMessage);
 			
 			String previousCollageURLs = "<table><tbody><tr>";
 			// Iterates through image string vector
@@ -177,12 +150,12 @@ public class HTMLGenerator {
 						+ imageStringVector.get(i) + "\"></td>";
 			}
 			previousCollageURLs = previousCollageURLs + "</tr></tbody></table>";
-			jspString = jspString.replace("$tableContents", previousCollageURLs);
+			htmlString = htmlString.replace("$tableContents", previousCollageURLs);
 			
-			// Writes new jspString to file
-			//FileUtils.writeStringToFile(new File("WebContent/collageresult.jsp"), jspString, StandardCharsets.UTF_8);
-			// Return JSP String
-			return jspString;
+			// Writes new htmlString to file
+			//FileUtils.writeStringToFile(new File("WebContent/collageresult.html"), htmlString, StandardCharsets.UTF_8);
+			// Return HTML String
+			return htmlString;
 		}
 		catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -190,19 +163,19 @@ public class HTMLGenerator {
 		}
 	}
 	
-	// Generates jsp page when previous collage is clicked
-	public String generatejspForPreviousCollage() {
-		// Instantiate file object from template jsp file
-		File collageTemplateFile = new File("WebContent/collagetemplate.jsp");
+	// Generates HTML page when previous collage is clicked
+	public String generateHTMLForPreviousCollage() {
+		// Instantiate file object from template HTML file
+		File collageTemplateFile = new File("WebContent/collagetemplate.html");
 		try {
 			int collageIndex = collageManager.getIndex();
 			Vector<BufferedImage> collages = collageManager.getCollages(); // Vector of collages created in session
 			Vector<String> collageTitles = collageManager.getCollageTitles(); // Vector of collages created in session
 			
 			// Converts File to String
-			String jspString = FileUtils.readFileToString(collageTemplateFile, StandardCharsets.UTF_8);
+			String htmlString = FileUtils.readFileToString(collageTemplateFile, StandardCharsets.UTF_8);
 			// Replaces title placeholder with title for that collage
-			jspString = jspString.replace("$topicString", collageTitles.get(collageIndex));
+			htmlString = htmlString.replace("$topicString", collageTitles.get(collageIndex));
 			
 			ByteArrayOutputStream byteArrayOS; // Output stream to convert BufferedImage to ByteArray
 			byte[] imageBytes; // ByteArray containing the BufferedImage in bytes
@@ -226,7 +199,7 @@ public class HTMLGenerator {
 			// Creates HTML string to display img
 			String displayImgString = "<img id=\"collage\" src" + "\"data:image/png;base64, " + imageStringVector.get(collageIndex) + "\"" + ">";
 			// Replace image URL placeholder
-			jspString = jspString.replace("$tableContents", displayImgString);
+			htmlString = htmlString.replace("$tableContents", displayImgString);
 			
 			/*  PREVIOUS COLLAGE SELECTOR  */
 			String previousCollageURLs = "<table><tbody><tr>";
@@ -243,11 +216,11 @@ public class HTMLGenerator {
 				}
 			}
 			previousCollageURLs = previousCollageURLs + "</tr></tbody></table>";
-			jspString = jspString.replace("$tableContents", previousCollageURLs);
-			// Writes new jspString to file
-			//FileUtils.writeStringToFile(new File("WebContent/collageresult.jsp"), jspString, StandardCharsets.UTF_8);
-			// Return JSP String
-			return jspString;
+			htmlString = htmlString.replace("$tableContents", previousCollageURLs);
+			// Writes new htmlString to file
+			//FileUtils.writeStringToFile(new File("WebContent/collageresult.html"), htmlString, StandardCharsets.UTF_8);
+			// Return HTML String
+			return htmlString;
 		}
 		catch (IOException ioe) {
 			ioe.printStackTrace();
