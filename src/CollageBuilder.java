@@ -31,7 +31,7 @@ public class CollageBuilder {
 	
 	private void multiImageTest(CollageBuilder cb) {
 		ImageSourcer is = new ImageSourcer();
-		Vector<String> imageSource = is.getImages("whales");
+		Vector<String> imageSource = is.getImages("yellow");
 		BufferedImage collage = cb.buildCollage(imageSource);
 		
 		JFrame frame = new JFrame();
@@ -92,7 +92,7 @@ public class CollageBuilder {
 		
 		// Create a Graphics2D object to composite images
 		Graphics2D graphic = canvas.createGraphics();
-		graphic.setColor(Color.white);
+		graphic.setColor(Color.orange); //TODO: change to white
 		graphic.fillRect(0, 0, collageWidth, collageHeight);
 		
 		if(checkValid(imageSource)) {
@@ -102,7 +102,7 @@ public class CollageBuilder {
 				Vector<Integer> randDegrees = null;
 				
 				//generating random numbers until the mindegrees are less than 6
-				while(minDegree>6) {
+				while(minDegree>=1) {
 					randDegrees = generateDegrees();
 					int indexOfSmallestDegree = getSmallestDegree(randDegrees);
 					Collections.swap(randDegrees, 0, indexOfSmallestDegree);
@@ -110,36 +110,49 @@ public class CollageBuilder {
 //						System.out.println(randDegrees.get(i));
 //					}
 					minDegree = randDegrees.get(0);
+					System.out.println(minDegree);
 				}
 				double avgImgArea = collageWidth*collageHeight/20;
 				double scaledWidth=0, scaledHeight=0;
 				
 				// TODO: change these placements
 				//int placeWidth=-50, placeHeight=-50;
-				int placeWidth=-(collageWidth/16), placeHeight=-(collageWidth/16);
+				int placeWidth=-(collageWidth/16), placeHeight=0;
+				double avgImgAreaDifference = 0;
 				for (int i=0;i<bufferedImageVec.size();i++) {
+					System.out.println("SIZE IS:" + bufferedImageVec.size());
 					BufferedImage currImage = bufferedImageVec.get(i);
-					System.out.println(i);
 					int currW = currImage.getWidth(); 
 					int currH = currImage.getHeight();
 					BufferedImage finalImage;
 					if(i==0) {										
 						// calculate scaled area of the image
-						scaledHeight = Math.sqrt(avgImgArea*50*currW/currH);
-						scaledWidth = currW/currH*scaledHeight;
-						
+						avgImgAreaDifference = (collageWidth*collageHeight) - avgImgArea;
+						//scaledHeight = Math.sqrt((collageWidth*collageHeight)*currW/currH);
+						//scaledWidth = currW/currH*scaledHeight;
+						scaledHeight= collageHeight;
+						scaledWidth= collageWidth;
+							
 					//}else if(i==1){
-					}else if(i==29) {
-						// calculate scaled area of the image
-
-						scaledHeight = Math.sqrt((avgImgArea/50)*currW/currH);
-						scaledWidth = currW/currH*scaledHeight;
-
-//						System.out.println("scaledHeight is " +scaledHeight);
-//						System.out.println("scaledWidth is" + scaledWidth);
+					//}else if(i==29) {
+//					}else if(avgImgAreaDifference>0) {
+//						System.out.println(avgImgAreaDifference);
+//						// calculate scaled area of the image
+//						if(avgImgArea>avgImgAreaDifference) {
+//							scaledHeight = Math.sqrt((avgImgArea-avgImgAreaDifference)*currW/currH);
+//							scaledWidth = currW/currH*scaledHeight;
+//							avgImgAreaDifference = 0;
+//						}else {
+//							scaledHeight = Math.sqrt((1)*currW/currH);
+//							scaledWidth = currW/currH*scaledHeight;
+//							avgImgAreaDifference -= avgImgArea-1;
+//						}
+//
+////						System.out.println("scaledHeight is " +scaledHeight);
+////						System.out.println("scaledWidth is" + scaledWidth);
 					}else {
 						// calculate scaled area of the image
-						scaledHeight = Math.sqrt(avgImgArea*currW/currH);
+						scaledHeight = Math.sqrt((avgImgArea-(avgImgAreaDifference/(bufferedImageVec.size()-1)))*currW/currH);
 						scaledWidth = currW/currH*scaledHeight;
 					}
 					if(scaledWidth<=0) {
@@ -155,20 +168,18 @@ public class CollageBuilder {
 					
 					// place the image onto the canvas
 					if(i==0) {
-						graphic.drawImage(finalImage, -(collageWidth/8),-(collageWidth/8), null);
+						graphic.drawImage(finalImage,0,0, null);
 					//}else if (i==1){
-					}else if (i==29) {
-						graphic.drawImage(finalImage, 0, 0, null);
 					} else {
 						graphic.drawImage(finalImage, placeWidth, placeHeight, null);
 					}
 					
 					// TODO: fix naive placement and hard coded constants
 					//if(i>1) {
-					if(i!=0&&i!=29) {
-						placeWidth += scaledWidth*3/4;
+					if(i!=0) {
+						placeWidth += scaledWidth;
 						if (placeWidth > collageWidth) {
-							placeWidth = -(collageWidth/16);
+							placeWidth = 0;
 							placeHeight += scaledHeight*3/4;
 						}
 					}
