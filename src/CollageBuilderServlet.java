@@ -58,7 +58,7 @@ public class CollageBuilderServlet extends HttpServlet {
 		if(imageSource != null && searchText != null && searchText.length() > 0)
 		{
 			//TODO: change the width and height
-			CollageBuilder collageBuilder = new CollageBuilder(); // instantiate CollageBuilder object
+			CollageBuilder collageBuilder = new CollageBuilder(1920,1080); // instantiate CollageBuilder object
 
 			
 			BufferedImage collage = collageBuilder.buildCollage(imageSource);			// CollageBuilder.buildCollage(imageSource) builds a collage out of the 30

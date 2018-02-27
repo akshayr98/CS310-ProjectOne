@@ -23,9 +23,7 @@ public class CollageBuilder {
 	
 	//TEST TO SEE IF THIS WORKS
 	public static void main(String args[]) {
-		//CollageBuilder cb = new CollageBuilder(1920,1080);
 		CollageBuilder cb = new CollageBuilder(1920,1080);
-		//cb.singleImageTest(cb);
 		cb.multiImageTest(cb);
 	}
 	
@@ -43,21 +41,18 @@ public class CollageBuilder {
 	
 	private int browserHeight;
 	private int browserWidth;
-//	private Vector<String> imageSource;
 	
 	private int collageWidth;
 	private int collageHeight;
 	private int imagePadding;
 
 	public CollageBuilder(int inBrowserWidth, int inBrowserHeight)
-	//public CollageBuilder()
 	{
 		//set for now will change in the future
-		//browserWidth = 1920;
-		//browserHeight = 1080;
 		browserWidth = inBrowserWidth;
 		browserHeight = inBrowserHeight;
 		System.out.println(browserWidth +" " + browserHeight);
+		
 		// padding as per stakeholder requirements
 		imagePadding = 3;
 		
@@ -65,8 +60,6 @@ public class CollageBuilder {
 		this.collageWidth = (int) (0.7 * browserWidth);
 		this.collageHeight = (int) (0.5 * browserHeight);
 		System.out.println(collageWidth +" " + collageHeight);
-		//this.collageWidth = 800;
-		//this.collageHeight = 600;
 		
 		// ensure that collage meets minimum size requirements
 		this.collageWidth = Math.max(this.collageWidth, 800);
@@ -74,17 +67,6 @@ public class CollageBuilder {
 		System.out.println(collageWidth +" " + collageHeight);
 	}
 	
-//	public CollageBuilder(int inBrowserHeight, int inBrowserWidth, Vector<String> inImageSource) {
-//		browserHeight = inBrowserHeight;
-//		browserWidth = inBrowserWidth;
-//		imageSource = inImageSource;
-//	}
-//	//default constructor
-//	public CollageBuilder() {
-//		browserHeight = 0;
-//		browserWidth = 0;
-//		imageSource = null;
-//	}
 	
 	public BufferedImage buildCollage(Vector<String> imageSource){
 		// TYPE_INT_ARGB means 4 bytes per pixel with alpha channel
@@ -106,9 +88,6 @@ public class CollageBuilder {
 					randDegrees = generateDegrees();
 					int indexOfSmallestDegree = getSmallestDegree(randDegrees);
 					Collections.swap(randDegrees, 0, indexOfSmallestDegree);
-//					for(int i=0;i<randDegrees.size();i++) {
-//						System.out.println(randDegrees.get(i));
-//					}
 					minDegree = randDegrees.get(0);
 					System.out.println(minDegree);
 				}
@@ -116,7 +95,6 @@ public class CollageBuilder {
 				double scaledWidth=0, scaledHeight=0;
 				
 				// TODO: change these placements
-				//int placeWidth=-50, placeHeight=-50;
 				int placeWidth=-(collageWidth/16), placeHeight=0;
 				double avgImgAreaDifference = 0;
 				for (int i=0;i<bufferedImageVec.size();i++) {
@@ -128,28 +106,8 @@ public class CollageBuilder {
 					if(i==0) {										
 						// calculate scaled area of the image
 						avgImgAreaDifference = (collageWidth*collageHeight) - avgImgArea;
-						//scaledHeight = Math.sqrt((collageWidth*collageHeight)*currW/currH);
-						//scaledWidth = currW/currH*scaledHeight;
 						scaledHeight= collageHeight;
 						scaledWidth= collageWidth;
-							
-					//}else if(i==1){
-					//}else if(i==29) {
-//					}else if(avgImgAreaDifference>0) {
-//						System.out.println(avgImgAreaDifference);
-//						// calculate scaled area of the image
-//						if(avgImgArea>avgImgAreaDifference) {
-//							scaledHeight = Math.sqrt((avgImgArea-avgImgAreaDifference)*currW/currH);
-//							scaledWidth = currW/currH*scaledHeight;
-//							avgImgAreaDifference = 0;
-//						}else {
-//							scaledHeight = Math.sqrt((1)*currW/currH);
-//							scaledWidth = currW/currH*scaledHeight;
-//							avgImgAreaDifference -= avgImgArea-1;
-//						}
-//
-////						System.out.println("scaledHeight is " +scaledHeight);
-////						System.out.println("scaledWidth is" + scaledWidth);
 					}else {
 						// calculate scaled area of the image
 						scaledHeight = Math.sqrt((avgImgArea-(avgImgAreaDifference/(bufferedImageVec.size()-1)))*currW/currH);
@@ -169,13 +127,11 @@ public class CollageBuilder {
 					// place the image onto the canvas
 					if(i==0) {
 						graphic.drawImage(finalImage,0,0, null);
-					//}else if (i==1){
 					} else {
 						graphic.drawImage(finalImage, placeWidth, placeHeight, null);
 					}
 					
 					// TODO: fix naive placement and hard coded constants
-					//if(i>1) {
 					if(i!=0) {
 						placeWidth += scaledWidth;
 						if (placeWidth > collageWidth) {
@@ -196,7 +152,6 @@ public class CollageBuilder {
 	//iterates through the vector and checks if all strings are null 
 	//if one is null return false
 	public boolean checkValid(Vector<String> imageSource) {
-	//public boolean checkValid() {
 		boolean exists = true;
 		for(int i=0;i<imageSource.size();i++){
 			if(imageSource.get(i)==null) {
@@ -208,13 +163,10 @@ public class CollageBuilder {
 	
 	//iterates through the the vector of urls, creating BufferedImage vector
 	public Vector<BufferedImage> grabbingImages(Vector<String> imageSource) throws IOException{
-//	public Vector<BufferedImage> grabbingImages() throws IOException{
 		Vector<BufferedImage> bufferedImageVec = new Vector<BufferedImage>();
 		for(int i=0;i<imageSource.size();i++) 
 		{
 			try {
-				//System.out.println(imageSource.get(i));
-				
 				URL url = new URL(imageSource.get(i));
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 				conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
@@ -235,12 +187,6 @@ public class CollageBuilder {
 	
 	//takes in an image and rotates it randomly -45 to 45 degrees
 	public BufferedImage rotateImage(BufferedImage inImage,int inDegrees) {
-	    /*AffineTransform transform = new AffineTransform();
-	    transform.rotate(Math.toRadians(inDegrees), inImage.getWidth()/2, inImage.getHeight()/2);
-	    AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
-	    inImage = op.filter(inImage, null);
-	    return inImage;*/
-	    
 		double rad = Math.toRadians(inDegrees);
 		double sin = Math.abs(Math.sin(rad)), cos = Math.abs(Math.cos(rad));
 	    int w = inImage.getWidth(), h = inImage.getHeight();
@@ -265,10 +211,6 @@ public class CollageBuilder {
 			num -= 45;
 			degrees.add(num);
 		}
-		
-		/*for (int i=0;i<30;i++) {
-			System.out.println(degrees.get(i));
-		}*/
 		return degrees;
 	}
 	
