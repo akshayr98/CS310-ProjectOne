@@ -39,38 +39,13 @@ public class CollageBuilder {
 		frame.setVisible(true);
 	}
 	
-	private void singleImageTest(CollageBuilder cb) {
-		Vector<String> urls = new Vector<String>();
-		for(int i=0;i<30;i++) {
-			urls.add("http://cdn.audubon.org/cdn/farfuture/RLIlWxqbInfEuN23V2H3hgR6R8M6O6BY47H_6m1ESE8/mtime:1497969000/sites/default/files/styles/hero_image/public/web_gbbc_sandhill_crane_3_bob-howdeshell_tn_2012_kk.jpg?itok=FfVIDhGx");
-		}
-		//urls.add(null);
-		JFrame frame = new JFrame();
-		frame.getContentPane().setLayout(new FlowLayout());
-		try {
-			BufferedImage bi = ImageIO.read(new URL(urls.get(0)));
-			bi = cb.getScaledImage(bi, 200, 200);
-		    
-			frame.getContentPane().add(new JLabel(new ImageIcon(cb.rotateImage(bi,-45))));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		frame.pack();
-		frame.setVisible(true);
-
-		//cb.buildCollage(urls);
-	}
-	
 	private int browserHeight;
 	private int browserWidth;
 //	private Vector<String> imageSource;
 	
 	private int collageWidth;
 	private int collageHeight;
+	private int imagePadding;
 
 	//public CollageBuilder(int inBrowserWidth, int inBrowserHeight)
 	public CollageBuilder()
@@ -79,9 +54,15 @@ public class CollageBuilder {
 		browserWidth = 1920;
 		browserHeight = 1080;
 		
+		// padding as per stakeholder requirements
+		imagePadding = 3;
+		
 		// set collage dimensions as per stakeholder requirements
-		this.collageWidth = (int) 0.7 * browserWidth;
-		this.collageHeight = (int) 0.5 * browserHeight;
+		//this.collageWidth = (int) 0.7 * browserWidth;
+		//this.collageHeight = (int) 0.5 * browserHeight;
+		
+		this.collageWidth = 800;
+		this.collageHeight = 600;
 		
 		// ensure that collage meets minimum size requirements
 		this.collageWidth = Math.max(this.collageWidth, 800);
@@ -137,12 +118,12 @@ public class CollageBuilder {
 					BufferedImage finalImage;
 					if(i==0) {										
 						// calculate scaled area of the image
-						scaledHeight = Math.sqrt(avgImgArea*20*currW/currH);
+						scaledHeight = Math.sqrt(avgImgArea*25*currW/currH);
 						scaledWidth = currW/currH*scaledHeight;
 						
 					}else if(i==1){
 						// calculate scaled area of the image
-						scaledHeight = Math.sqrt((avgImgArea/20)*currW/currH);
+						scaledHeight = Math.sqrt((avgImgArea/25)*currW/currH);
 						scaledWidth = currW/currH*scaledHeight;
 //						System.out.println("scaledHeight is " +scaledHeight);
 //						System.out.println("scaledWidth is" + scaledWidth);
@@ -153,17 +134,20 @@ public class CollageBuilder {
 					}
 					// scale and rotate the image accordingly
 					finalImage = getScaledImage(currImage, (int)scaledWidth, (int)scaledHeight);
+					finalImage = addPadding(finalImage);
 					finalImage = rotateImage(finalImage, randDegrees.get(i));	
+					
 					// place the image onto the canvas
 					if(i==0) {
-						
 						graphic.drawImage(finalImage, -100,-100, null);
-					}else {
+					}else if (i==1){
+						graphic.drawImage(finalImage, 0, 0, null);
+					} else {
 						graphic.drawImage(finalImage, placeWidth, placeHeight, null);
 					}
 					
 					// TODO: fix naive placement and hard coded constants
-					if(i!=1||i!=0) {
+					if(i>1) {
 						placeWidth += scaledWidth*3/4;
 						if (placeWidth > collageWidth) {
 							placeWidth = -50;
@@ -253,6 +237,20 @@ public class CollageBuilder {
 			}
 		}
 		return index;
+	}
+	
+	private BufferedImage addPadding(BufferedImage src) {
+		int srcWidth = src.getWidth();
+		int srcHeight = src.getHeight();
+		int paddedWidth = srcWidth+imagePadding*2, paddedHeight = srcHeight+imagePadding*2;
+		BufferedImage paddedImage = new BufferedImage(paddedWidth, paddedHeight, src.getType());
+		
+		Graphics2D g2d = paddedImage.createGraphics();
+		g2d.setColor(Color.white);
+		g2d.fillRect(0, 0, paddedWidth, paddedHeight);
+		g2d.drawImage(src, imagePadding, imagePadding, null);
+		g2d.dispose();
+		return paddedImage;
 	}
 	
 	// scales the image based on desired width and height ratio of original image
