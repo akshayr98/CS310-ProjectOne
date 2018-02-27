@@ -110,8 +110,8 @@ public class CollageBuilder {
 				double scaledWidth=0, scaledHeight=0;
 				
 				// TODO: change these placements
-				int placeWidth=-50, placeHeight=-50;
-				
+				//int placeWidth=-50, placeHeight=-50;
+				int placeWidth=-(collageWidth/16), placeHeight=-(collageWidth/16);
 				for (int i=0;i<bufferedImageVec.size();i++) {
 					BufferedImage currImage = bufferedImageVec.get(i);
 					int currW = currImage.getWidth(), currH = currImage.getHeight();
@@ -121,7 +121,8 @@ public class CollageBuilder {
 						scaledHeight = Math.sqrt(avgImgArea*25*currW/currH);
 						scaledWidth = currW/currH*scaledHeight;
 						
-					}else if(i==1){
+					//}else if(i==1){
+					}else if(i==29) {
 						// calculate scaled area of the image
 						scaledHeight = Math.sqrt((avgImgArea/25)*currW/currH);
 						scaledWidth = currW/currH*scaledHeight;
@@ -139,18 +140,20 @@ public class CollageBuilder {
 					
 					// place the image onto the canvas
 					if(i==0) {
-						graphic.drawImage(finalImage, -100,-100, null);
-					}else if (i==1){
+						graphic.drawImage(finalImage, -(collageWidth/8),-(collageWidth/8), null);
+					//}else if (i==1){
+					}else if (i==29) {
 						graphic.drawImage(finalImage, 0, 0, null);
 					} else {
 						graphic.drawImage(finalImage, placeWidth, placeHeight, null);
 					}
 					
 					// TODO: fix naive placement and hard coded constants
-					if(i>1) {
+					//if(i>1) {
+					if(i!=0&&i!=29) {
 						placeWidth += scaledWidth*3/4;
 						if (placeWidth > collageWidth) {
-							placeWidth = -50;
+							placeWidth = -(collageWidth/16);
 							placeHeight += scaledHeight*3/4;
 						}
 					}
