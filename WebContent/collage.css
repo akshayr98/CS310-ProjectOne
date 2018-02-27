@@ -19,6 +19,11 @@ body {
 	top: 10px;
 }
 
+a {
+	text-decoration: none;
+	font-family: Arial;
+}
+
 #collagetitle {
 	font-size: 32px;
 	text-align: center;
@@ -45,7 +50,7 @@ body {
 	font-size: 24px;
 }
 
-#searchterm {
+#searchtext {
 	font-size: 16px;
 	border: 2px solid #777777;
 }
@@ -56,8 +61,8 @@ body {
 }
 
 #previousCollage {
-	max-width: 100px;
-	max-height: 100px;
+	max-width: 200px;
+	max-height: 200px;
 	padding: 5px 10px;
 }
 
@@ -65,4 +70,5 @@ body {
 	width: 100%;
 	overflow-x: auto;
 	white-space: nowrap;
+	height: 250px;
 }

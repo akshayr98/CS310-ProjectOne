@@ -53,7 +53,7 @@
 	</head>
 	<body>
 		<h1 id="collagetitle">Collage for topic $topicString</h1>
-		<button type="button" class="button" id="exportbutton" onclick="alert('Export Initiated')">Export Collage</button>
+		<a class="button" id="exportbutton" href=$collageURL download>Export Collage</a>
 		<div id="collagecontainer">
 			<span id="collageinner">
 				$collageSpaceContents
@@ -63,7 +63,7 @@
 			<form id="searchform">
 				<input type="text" id="searchtext" placeholder="Enter topic">
 				<span>
-					<button type="button" id="searchbutton" disabled="disabled">Build Another Collage</button>
+					<button class="button" id="searchbutton" disabled="disabled">Build Another Collage</button>
 				</span>
 			</form>
 		</div>

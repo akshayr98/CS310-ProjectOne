@@ -71,6 +71,12 @@ public class HTMLGenerator {
 			String displayImgString = "<img id=\"collage\" src=" + "\"data:image/png;base64, " + imageStringVector.get(collageIndex) + "\"" + ">";
 			// Replaces image URL placeholder
 			htmlString = htmlString.replace("$collageSpaceContents", displayImgString);
+			
+			// Creates Collage URL string for exporting purposes
+			String collageURLString = "\"" + "data:image/png;base64, " + imageStringVector.get(collageIndex) + "\"";
+			// Replaces collage URL placeholder
+			htmlString = htmlString.replace("$collageURL", collageURLString);
+			
 			System.out.println("currentCollageTitle IS: " + currentCollageTitle);
 			
 			String previousCollageURLs = "<table><tbody><tr>";
