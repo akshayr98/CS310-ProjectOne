@@ -2,6 +2,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Vector;
@@ -95,10 +96,12 @@ public class HTMLGenerator {
 			previousCollageURLs = previousCollageURLs + "</tr></tbody></table>";
 			htmlString = htmlString.replace("$tableContents", previousCollageURLs);
 			System.out.println("DEBUG: " + currentCollageTitle);
+			String encodedCollageTitle = currentCollageTitle.replaceAll("\\W+", ""); // encoding collage title to be string-friendly
+			FileUtils.cleanDirectory(new File("/Users/Stanley/Desktop/$$/School/Year 3/Year 3 Semester 2/CSCI 310/CSCI 310 Workspace/CS310-ProjectOne/WebContent/collagepages/"));
 			// Writes new htmlString to file
-			FileUtils.writeStringToFile(new File("/Users/Stanley/Desktop/$$/School/Year 3/Year 3 Semester 2/CSCI 310/CSCI 310 Workspace/CS310-ProjectOne/WebContent/collageresult.jsp"), htmlString, StandardCharsets.UTF_8);
+			FileUtils.writeStringToFile(new File("/Users/Stanley/Desktop/$$/School/Year 3/Year 3 Semester 2/CSCI 310/CSCI 310 Workspace/CS310-ProjectOne/WebContent/collagepages/" + encodedCollageTitle + "collage.jsp"), htmlString, StandardCharsets.UTF_8);
 			// Return Dummy
-			return "dummy";
+			return encodedCollageTitle + "collage.jsp";
 		}
 		catch (IOException ioe) {
 			ioe.printStackTrace();

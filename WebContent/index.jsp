@@ -12,7 +12,9 @@
 				{
 					event.preventDefault(); // prevent submit
 					console.log("DEBUG: submitted");
-					var searchtext = document.getElementById("searchtext").value; // get value from form
+					var searchText = document.getElementById("searchtext").value; // get value from form
+					var browserWidth = $(window).width(); // browser viewport width
+					var browserHeight = $(window).height(); // browser viewport height
 					console.log(searchtext);
 					$.ajax(
 					{
@@ -20,12 +22,17 @@
 						url: "collageBuilderServlet",
 						data: // pass data
 						{
-							searchtext: searchtext
+							searchText: searchText,
+							browserWidth: browserWidth,
+							browserHeight: browserHeight
+							
 						}, // data end
 						success: function(response)
 						{
 							console.log("success");
-							window.location.replace("collageresult.jsp")
+							setTimeout(function(){
+								window.location.replace("collagepages/" + response);
+							}, 1000);
 						} // end success
 						
 					}); //end ajax

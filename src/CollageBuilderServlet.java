@@ -44,7 +44,7 @@ public class CollageBuilderServlet extends HttpServlet {
 		CollageManager collageManager = (CollageManager) session.getAttribute("collageManager"); // access CollageManager from HttpSession
 		
 		// parsing user input
-		String searchText = request.getParameter("searchtext"); // get search query from ajax call
+		String searchText = request.getParameter("searchText"); // get search query from ajax call
 		System.out.println("searchtext1:" + searchText);
 
 		System.out.println("searchtext2:" + searchText);
@@ -59,8 +59,9 @@ public class CollageBuilderServlet extends HttpServlet {
 		// if the imageSourcer returned 30 image URLs
 		if(imageSource != null && searchText != null && searchText.length() > 0)
 		{
-			//TODO: change the width and height
-			CollageBuilder collageBuilder = new CollageBuilder(1920, 1080); // instantiate CollageBuilder object
+			int browserWidth = Integer.valueOf(request.getParameter("browserWidth"));
+			int browserHeight = Integer.valueOf(request.getParameter("browserHeight"));
+			CollageBuilder collageBuilder = new CollageBuilder(browserWidth, browserHeight); // instantiate CollageBuilder object
 
 			
 			BufferedImage collage = collageBuilder.buildCollage(imageSource);			// CollageBuilder.buildCollage(imageSource) builds a collage out of the 30
@@ -93,7 +94,8 @@ public class CollageBuilderServlet extends HttpServlet {
 	    	response.setCharacterEncoding("UTF-8");
 	    	System.out.println("Servlet complete");
 	    	// set response text to responseText string
-	    	response.getWriter().write("success");
+	    	response.getWriter().write(responseText);
+	    	//response.sendRedirect("collagepages/" + responseText);
 	    	
     	
 	} // end service

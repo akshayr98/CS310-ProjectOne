@@ -5,7 +5,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Collage for topic $topicString</title>
-		<link rel="stylesheet" type="text/css" href="collage.css">
+		<link rel="stylesheet" type="text/css" href="../collage.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script>
 			$(document).ready(function() 
@@ -28,7 +28,9 @@
 						success: function(response)
 						{
 							console.log("success");
-							window.location.replace("collageresult.jsp")
+							setTimeout(function(){
+								window.location.replace("collagepages/" + response);
+							}, 1000);
 						} // end success
 						
 					}); //end ajax
@@ -52,6 +54,12 @@
 		</script>
 	</head>
 	<body>
+		<%
+		response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
+		response.setHeader("Pragma","no-cache"); //HTTP 1.0
+		response.setDateHeader ("Expires", 0);
+		//prevents caching at the proxy server
+		%>
 		<h1 id="collagetitle">Collage for topic $topicString</h1>
 		<a class="button" id="exportbutton" href=$collageURL download>Export Collage</a>
 		<div id="collagecontainer">
