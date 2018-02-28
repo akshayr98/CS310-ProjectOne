@@ -23,7 +23,8 @@ public class CollageBuilder {
 	
 	//TEST TO SEE IF THIS WORKS
 	public static void main(String args[]) {
-		CollageBuilder cb = new CollageBuilder(1920,1080);
+		//CollageBuilder cb = new CollageBuilder(1920,1080);
+		CollageBuilder cb = new CollageBuilder(600,1000);
 		cb.multiImageTest(cb);
 	}
 	
@@ -110,13 +111,17 @@ public class CollageBuilder {
 						scaledWidth= collageWidth;
 					}else {
 						// calculate scaled area of the image
-						scaledHeight = Math.sqrt((avgImgArea-(avgImgAreaDifference/(bufferedImageVec.size()-1)))*currW/currH);
-						scaledWidth = currW/currH*scaledHeight;
+						scaledHeight = Math.sqrt((avgImgArea-(avgImgAreaDifference/(bufferedImageVec.size()-1)))*(double)currW/currH);
+						scaledWidth = (double)currW/currH*scaledHeight;
+						
 					}
 					if(scaledWidth<=0) {
+						//System.out.println("scaled width");
+						System.out.println("scaledheight " + scaledHeight + "scaledWidth " + scaledWidth + "currWidth " + currW + "currHeight " + currH + "div " + currW/currH + "div with 1.0" + currW/currH*1.0);
 						scaledWidth=1;
 					}
 					if(scaledHeight<=0) {
+						System.out.println("scaled height");
 						scaledHeight=1;
 					}
 					// scale and rotate the image accordingly
@@ -128,17 +133,21 @@ public class CollageBuilder {
 					if(i==0) {
 						graphic.drawImage(finalImage,0,0, null);
 					} else {
+						// TODO: fix naive placement and hard coded constants
 						graphic.drawImage(finalImage, placeWidth, placeHeight, null);
 					}
-					
-					// TODO: fix naive placement and hard coded constants
 					if(i!=0) {
 						placeWidth += scaledWidth;
-						if (placeWidth > collageWidth) {
+						if (placeWidth > collageWidth-scaledWidth) {
 							placeWidth = 0;
-							placeHeight += scaledHeight*3/4;
+							placeHeight += scaledHeight;
+						}
+						if (placeHeight > collageHeight-scaledHeight) {
+							placeHeight = (int) (scaledWidth/2);
+							placeWidth = 0;
 						}
 					}
+					
 				}
 				
 			} catch (IOException e) {
