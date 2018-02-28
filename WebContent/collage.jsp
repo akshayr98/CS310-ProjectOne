@@ -213,7 +213,7 @@
 								console.log(children.length);
 								newDiv = document.createElement("div");
 								newDiv.id = 'error';
-								newDiv.innerHTML = "Insufficient Number of Images Found";
+								newDiv.innerHTML = "Insufficient number of images found";
 								collage.innerHTML = "";
 								collage.appendChild(newDiv);
 								exportButton.disabled = true;
