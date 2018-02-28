@@ -18,24 +18,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class CollageBuilder {
-	
-	public static void main(String args[]) {
-		CollageBuilder cb = new CollageBuilder(600,800);
-		cb.multiImageTest(cb);
-	}
-	
-	private void multiImageTest(CollageBuilder cb) {
-		ImageSourcer is = new ImageSourcer();
-		Vector<String> imageSource = is.getImages("elon musk");
-		BufferedImage collage = cb.buildCollage(imageSource);
-		
-		JFrame frame = new JFrame();
-		frame.getContentPane().setLayout(new FlowLayout());
-		frame.getContentPane().add(new JLabel(new ImageIcon(collage)));
-		frame.pack();
-		frame.setVisible(true);
-	}
-	
 	private int browserHeight;
 	private int browserWidth;
 	
@@ -82,7 +64,6 @@ public class CollageBuilder {
 			// Convert image URLs to BufferedImages
 			Vector<BufferedImage> bufferedImageVec = urlsToBufferedImages(imageSource);
 			Vector<Integer> randDegrees = null;
-			System.out.println("Number of images:" + bufferedImageVec.size());
 			
 			// Generate random values until there is at least one zero present
 			int minDegree = 1;

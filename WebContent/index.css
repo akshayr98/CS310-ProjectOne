@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+/* MAIN COMPONENTS OF FILE */
 html, body {
 	height:100%;
 	width:100%;
@@ -14,21 +15,25 @@ body {
     width: 100%;
 }
 
+/* MAIN CONTENT SECTION */
 #content {
 	display: table-cell;
 	vertical-align: middle;
 }
 
+/*  CONTAINER FOR FORM  */
 #formcontainer {
     width: 400px;
     margin-left: 43%;
 }
 
+/*  SEARCH TEXT BOX IN FORM  */
 #searchtext {
 	border: 2px solid #777777;
 	font-size: 16px;
 }
 
+/*  SEARCH BUTTON IN FORM  */
 #searchbutton {
 	background-color: #777777;
 	color: white;

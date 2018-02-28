@@ -64,13 +64,12 @@
 			}
 		}
 		
-		// Function to enable 
+		// Function to enable functionality to press enter key to search
 		document.addEventListener("keyup", function(event) {
 			if (event.keyCode == 13) {
 				searchButton.click();
 			}
 		})
-		
 	</script>
 	</body>
 </html>

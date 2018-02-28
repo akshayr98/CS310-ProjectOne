@@ -18,7 +18,7 @@ public class ImageSourcer {
 
 	// configuration variables
 	private final int REQUIRED_IMAGES = 30; // number of images needed to build the collage
-	private final String API_KEY = "AIzaSyDl6T1itQ1cmgBR0dOCnI7KPWbdnwuSGUg"; // this is an API key provided by Google
+	private final String API_KEY = "AIzaSyARWguCMARs26vivRF2GgFooxtEAchKS7k"; // this is an API key provided by Google
 	private final String SEARCH_ENGINE_KEY = "004843956391315063069:wnj8zpugysm"; // this is a custom search engine key provided by Google
 	private final String SEARCH_FILETYPES = "png,jpg"; // desired file types for search
 	private final int GOOGLE_SEARCH_LIMIT = 10; // number of results that Google returns per query
@@ -50,9 +50,7 @@ public class ImageSourcer {
 		 * 	2. parse data, which is returned as a JSON file, to obtain URLs
 		 * 	3. append URLs to our vector of URLs */ 
 		try {
-			for(int offset = 0; offset <= (REQUIRED_IMAGES-1)/GOOGLE_SEARCH_LIMIT * GOOGLE_SEARCH_LIMIT /* REQUIRED_IMAGES rounded down to multiple of GOOGLE_SEARCH_LIMIT */; offset += GOOGLE_SEARCH_LIMIT) // loops, getting GOOGLE_SEARCH_LIMIT images each time, until enough images gathered
-			{
-				
+			for (int offset = 0; offset <= (REQUIRED_IMAGES-1)/GOOGLE_SEARCH_LIMIT * GOOGLE_SEARCH_LIMIT /* REQUIRED_IMAGES rounded down to multiple of GOOGLE_SEARCH_LIMIT */; offset += GOOGLE_SEARCH_LIMIT) { // loops, getting GOOGLE_SEARCH_LIMIT images each time, until enough images gathered
 				// setting up search parameters
 				String qry = "";
 				try {
@@ -71,7 +69,7 @@ public class ImageSourcer {
 				// creating connection with Google Custom Search API - see API documentation for parameter details
 				HttpURLConnection conn = null;
 				try {
-					URL url = new URL ("https://www.googleapis.com/customsearch/v1?key=" +key+ "&cx=" +cx+ "&q="+qry+"&fileType="+fileType+"&searchType="+searchType+"&alt=json&start="+startIndex);
+					URL url = new URL ("https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=" + cx + "&q=" + qry + "&fileType=" + fileType + "&searchType=" + searchType + "&alt=json&start=" + startIndex);
 					conn = (HttpURLConnection) url.openConnection();
 					conn.setRequestMethod("GET");
 					conn.setRequestProperty("Accept", "application/json");
@@ -84,63 +82,47 @@ public class ImageSourcer {
 				builder = new StringBuilder();
 				
 				// retrieving result from Google connection's input stream
-				try 
-				{
+				try {
 					br = new BufferedReader(new InputStreamReader((conn.getInputStream())));		
 					String line; // temporary variable to store lines from buffered reader as we read from input stream
 					
 					// read each line one by one and append to our string builder
-					while((line = br.readLine()) != null) 
-					{
+					while((line = br.readLine()) != null) {
 						builder.append(line);
 					}
-					
 					// terminate connection with Google
 					conn.disconnect();
-				
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				
 				// Google returns result in JSON format
 				// converting result to JSON object and then parsing that JSON object to extract data
 				String imageUrl = null; // temporary variable to hold current image url as we iterate through data
-				try 
-				{
+				try {
 					json = new JSONObject(builder.toString());
-					for(int i = 0; i < GOOGLE_SEARCH_LIMIT; i++)
-					{	
+					for (int i = 0; i < GOOGLE_SEARCH_LIMIT; i++) {	
 						imageUrl = json.getJSONArray("items").getJSONObject(i).getString("link");
 						imageURLs.addElement(imageUrl);
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				
-				System.out.println("loop end");
 			} // end offset and search loop
 		} catch (Exception e)
 		{
 			// if any exception occurs in the image sourcing, assume Google failure 
 		}
-
 		// check that REQUIRED_IMAGES image URLs were found
-		if(imageURLs.size() >= REQUIRED_IMAGES)
-		{
+		if (imageURLs.size() >= REQUIRED_IMAGES) {
 			// if more than REQUIRED_IMAGES URLs found, return only REQUIRED_IMAGES of them
 			Vector<String> imageURLsLimited = new Vector<String>(); // will hold only first REQUIRED_IMAGES URLs
-			for(int i = 0; i < REQUIRED_IMAGES; i++)
-			{
+			for (int i = 0; i < REQUIRED_IMAGES; i++) {
 				imageURLsLimited.add(imageURLs.get(i));
 			}
-			
 			return imageURLsLimited;
 		}
-		else
-		{
+		else {
 			return null; // return value of null indicates that < REQUIRED_IMAGES images were found
 		}
-
 	} // end getImages(String)
-
 } // end Class ImageSourcer
