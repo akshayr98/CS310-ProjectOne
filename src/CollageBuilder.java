@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -26,7 +25,7 @@ public class CollageBuilder {
 	
 	private void multiImageTest(CollageBuilder cb) {
 		ImageSourcer is = new ImageSourcer();
-		Vector<String> imageSource = is.getImages("gif");
+		Vector<String> imageSource = is.getImages("elon musk");
 		BufferedImage collage = cb.buildCollage(imageSource);
 		
 		JFrame frame = new JFrame();
@@ -85,7 +84,7 @@ public class CollageBuilder {
 			System.out.println("Number of images:" + bufferedImageVec.size());
 			
 			// Generate random values until there is at least one zero present
-			int minDegree = 7;
+			int minDegree = 1;
 			while (minDegree > 0) {
 				randDegrees = generateDegrees();
 				int indexOfZero = randDegrees.indexOf(0);
@@ -107,19 +106,15 @@ public class CollageBuilder {
 				int currH = currImage.getHeight();
 				
 				BufferedImage finalImage;
+				int numNullImages = numImages-bufferedImageVec.size();
 				if (i == 0) { // Scale the image to fill the entire collage space
-					int numNullImages = numImages-imageSource.size();
-					avgImgAreaDifference = (collageWidth*collageHeight);//-avgImgArea*(numNullImages+1);
+					avgImgAreaDifference = (collageWidth*collageHeight)-(avgImgArea*(numNullImages+1));
 					scaledHeight = collageHeight;
 					scaledWidth = collageWidth;
 				} else { // Scale the rest of the images to fulfill 1/20 avg requirement
-					scaledHeight = Math.sqrt((avgImgArea-(avgImgAreaDifference/(-1)))*(double)currW/currH);
+					scaledHeight = Math.sqrt((avgImgArea-(avgImgAreaDifference/((bufferedImageVec.size()-1))))*(double)currW/currH);
 					scaledWidth = (double)currW/currH*scaledHeight;
 				}
-				System.out.println("avgimgarea: " + avgImgArea);
-				System.out.println("w/h: " + (double)currW/currH);
-				System.out.println("diff ratio:" + avgImgAreaDifference/(bufferedImageVec.size()-1));
-				System.out.println("scaledWidth: " + scaledWidth + " scaledheight: " + scaledHeight);
 				// Scale, add padding, and rotate the image
 				finalImage = getScaledImage(currImage, (int) scaledWidth, (int) scaledHeight);
 				finalImage = addPadding(finalImage);
@@ -167,11 +162,6 @@ public class CollageBuilder {
 				{
 					bufferedImageVec.add(image);
 				}
-					
-				/*if(urlString.contains(".")) {
-				    String extension = urlString.substring(urlString.lastIndexOf("."));
-				    System.out.println(extension);
-				}*/
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
