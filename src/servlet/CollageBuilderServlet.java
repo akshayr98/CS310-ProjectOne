@@ -1,6 +1,7 @@
-
+package servlet;
 
 import java.awt.image.BufferedImage;
+import java.io.*;
 import java.io.IOException;
 import java.util.Vector;
 
@@ -10,6 +11,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import javax.imageio.ImageIO;
+
+import java.util.Base64;
+
+import classes.*;
 
 /**
  * Servlet implementation class tttServlet
@@ -47,7 +54,6 @@ public class CollageBuilderServlet extends HttpServlet {
 		String searchText = request.getParameter("searchText"); // get search query from ajax call
 		System.out.println("searchtext1:" + searchText);
 
-		System.out.println("searchtext2:" + searchText);
 		// obtaining images from google
 		ImageSourcer imageSourcer = new ImageSourcer(); // instantiate ImageSourcer object
 		Vector<String> imageSource = imageSourcer.getImages(searchText); // ImageSourcer.getImages(searchText) searches Google Images with searchText as the query
@@ -59,9 +65,8 @@ public class CollageBuilderServlet extends HttpServlet {
 		// if the imageSourcer returned 30 image URLs
 		if(imageSource != null && searchText != null && searchText.length() > 0)
 		{
-			int browserWidth = Integer.valueOf(request.getParameter("browserWidth"));
-			int browserHeight = Integer.valueOf(request.getParameter("browserHeight"));
-			CollageBuilder collageBuilder = new CollageBuilder(browserWidth, browserHeight); // instantiate CollageBuilder object
+			//TODO: change the width and height
+			CollageBuilder collageBuilder = new CollageBuilder(1920, 1080); // instantiate CollageBuilder object
 
 			
 			BufferedImage collage = collageBuilder.buildCollage(imageSource);			// CollageBuilder.buildCollage(imageSource) builds a collage out of the 30
@@ -72,32 +77,26 @@ public class CollageBuilderServlet extends HttpServlet {
 		{
 			collageBuildingFailed = true;
 		}
-
 		
-		// construct HTML code to pass back to client as response text
-		String responseText; // string to hold raw text representation of response text
-		
-		HTMLGenerator htmlGenerator = new HTMLGenerator(collageManager); // instantiate HTMLGenerator object. Takes CollageManager pointer in constructor.
-		if(collageBuildingFailed)
-		{
-			responseText = htmlGenerator.generateHTML(searchText); // if collage building was unsuccessful, call the generateHTML(String) function, which will generate the HTML to display
-													// all previous collages and indicate that the most recent collage building failed.
+		if (collageBuildingFailed) {
+			
+		} else {
+//			Vector<BufferedImage> collages = collageManager.getCollages();
+//			BufferedImage bImage = collages.get(collages.size()-1);
+//			ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+//			ImageIO.write(bImage, "png", byteArrayOS);
+//			byte[] imageBytes = byteArrayOS.toByteArray();
+//			imageBytes = Base64.getEncoder().encode(imageBytes);
+//			String base64String = new String(imageBytes, "UTF-8");
+//			response.setContentType("text/plain");
+//			response.setCharacterEncoding("UTF-8");
+//			response.getWriter().write(base64String);
+//			System.out.println(request.getParameter("page"));
 		}
-		else // if collage building did not fail
-		{
-			responseText = htmlGenerator.generateHTML(); // if collage building was successful, call the generateHTML() function, which will generate the HTML to display 
-											// all previous collages with the most recent one in the main collage display area
-		}
-		
-		// set response text settings
-	    	response.setContentType("text/plain");
-	    	response.setCharacterEncoding("UTF-8");
-	    	System.out.println("Servlet complete");
-	    	// set response text to responseText string
-	    	response.getWriter().write(responseText);
-	    	//response.sendRedirect("collagepages/" + responseText);
-	    	
-    	
+		session.setAttribute("collageManager", collageManager); // set session attribute to created CollageManager
+		System.out.println("Collage manager size: " + collageManager.getCollages().size());
+		System.out.println("Collage manager index 1: " + collageManager.getCollageTitles().get(0));
 	} // end service
-
+	
+	
 }
