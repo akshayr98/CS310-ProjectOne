@@ -45,36 +45,33 @@ public class CollageBuilder {
 	
 	private int collageWidth;
 	private int collageHeight;
-	private int imagePadding;
+	private static int imagePadding = 3;
 
 	public CollageBuilder(int inBrowserWidth, int inBrowserHeight)
 	{
-		//set for now will change in the future
 		browserWidth = inBrowserWidth;
 		browserHeight = inBrowserHeight;
-		System.out.println(browserWidth +" " + browserHeight);
-		
-		// padding as per stakeholder requirements
-		imagePadding = 3;
-		
-		// set collage dimensions as per stakeholder requirements
+	
+		/* Collage width must be between 40 and 70% of the browser viewport width
+		 * Collage height must be between 35 and 50% of the browser viewport height
+		 * Set collage dimensions to the maximum possible percentage given in requirements
+		 */
 		this.collageWidth = (int) (0.7 * browserWidth);
 		this.collageHeight = (int) (0.5 * browserHeight);
-		System.out.println(collageWidth +" " + collageHeight);
 		
-		// ensure that collage meets minimum size requirements
+		/* Collage width must be at least 800px and height must be at least 600px
+		 * Ensure that collage meets minimum size requirements
+		 */
 		this.collageWidth = Math.max(this.collageWidth, 800);
 		this.collageHeight = Math.max(this.collageHeight, 600); 	
-		System.out.println(collageWidth +" " + collageHeight);
 	}
 	
-	
 	public BufferedImage buildCollage(Vector<String> imageSource){
-		// TYPE_INT_ARGB means 4 bytes per pixel with alpha channel
-		BufferedImage canvas = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_INT_ARGB);
+		// Create TYPE_INT_ARGB means 4 bytes per pixel with alpha channel
+		BufferedImage collage = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_INT_ARGB);
 		
 		// Create a Graphics2D object to composite images
-		Graphics2D graphic = canvas.createGraphics();
+		Graphics2D graphic = collage.createGraphics();
 		graphic.setColor(Color.orange); //TODO: change to white
 		graphic.fillRect(0, 0, collageWidth, collageHeight);
 		
@@ -90,7 +87,6 @@ public class CollageBuilder {
 					int indexOfSmallestDegree = getSmallestDegree(randDegrees);
 					Collections.swap(randDegrees, 0, indexOfSmallestDegree);
 					minDegree = randDegrees.get(0);
-					System.out.println(minDegree);
 				}
 				double avgImgArea = collageWidth*collageHeight/20;
 				double scaledWidth=0, scaledHeight=0;
@@ -98,8 +94,8 @@ public class CollageBuilder {
 				// TODO: change these placements
 				int placeWidth=-(collageWidth/16), placeHeight=0;
 				double avgImgAreaDifference = 0;
+				System.out.println("Number of images:" + bufferedImageVec.size());
 				for (int i=0;i<bufferedImageVec.size();i++) {
-					System.out.println("SIZE IS:" + bufferedImageVec.size());
 					BufferedImage currImage = bufferedImageVec.get(i);
 					int currW = currImage.getWidth(); 
 					int currH = currImage.getHeight();
@@ -116,8 +112,7 @@ public class CollageBuilder {
 						
 					}
 					if(scaledWidth<=0) {
-						//System.out.println("scaled width");
-						System.out.println("scaledheight " + scaledHeight + "scaledWidth " + scaledWidth + "currWidth " + currW + "currHeight " + currH + "div " + currW/currH + "div with 1.0" + currW/currH*1.0);
+						System.out.println("scaled width");
 						scaledWidth=1;
 					}
 					if(scaledHeight<=0) {
@@ -127,7 +122,7 @@ public class CollageBuilder {
 					// scale and rotate the image accordingly
 					finalImage = getScaledImage(currImage, (int)scaledWidth, (int)scaledHeight);
 					finalImage = addPadding(finalImage);
-					finalImage = rotateImage(finalImage, randDegrees.get(i));	
+					finalImage = rotateImage(finalImage, randDegrees.get(i));
 					
 					// place the image onto the canvas
 					if(i==0) {
@@ -155,7 +150,7 @@ public class CollageBuilder {
 			}
 		}
 		
-		return canvas;
+		return collage;
 	}
 	
 	//iterates through the vector and checks if all strings are null 
@@ -173,10 +168,12 @@ public class CollageBuilder {
 	//iterates through the the vector of urls, creating BufferedImage vector
 	public Vector<BufferedImage> grabbingImages(Vector<String> imageSource) throws IOException{
 		Vector<BufferedImage> bufferedImageVec = new Vector<BufferedImage>();
-		for(int i=0;i<imageSource.size();i++) 
+		//for(int i=0;i<imageSource.size();i++) 
+		imageSource.parallelStream().forEach((urlString) ->
 		{
 			try {
-				URL url = new URL(imageSource.get(i));
+				//URL url = new URL(imageSource.get(i));
+				URL url = new URL(urlString);
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 				conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
 				BufferedImage image = ImageIO.read(conn.getInputStream());
@@ -184,13 +181,11 @@ public class CollageBuilder {
 				{
 					bufferedImageVec.add(image);
 				}
-				else
-					System.out.println("null image: " + url);
 			} catch(IOException e)
 			{
 				e.printStackTrace();
 			}
-		}
+		});
 		return bufferedImageVec;
 	}
 	
