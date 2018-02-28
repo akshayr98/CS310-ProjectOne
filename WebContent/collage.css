@@ -23,6 +23,7 @@
 }
 #title {
 	text-align: center;
+	font-size: 24pt;
 }
 #inputDiv {
 	text-align: center;
@@ -130,12 +131,13 @@ a {
 	margin-left: auto;
 	margin-right: auto;
 	
-	border: 1px solid black;
+	border: 0px;
 	text-align: center;
-	line-height: 300px;
+	line-height: 2400%;
 	
 	min-width: 800px;
 	min-height: 600px;
 	width: 40vw;
 	height: 50vh;
+	font-size: 24px;
 }

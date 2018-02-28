@@ -44,7 +44,7 @@
 		<%
 		if (collages.size() == 0) {
 		%>
-			<div id="collage"><div id="main">Insufficient Number of Images Found</div></div>
+			<div id="collage"><div id="error">Insufficient number of images found</div></div>
 		<%
 		}
 		else {
@@ -97,6 +97,15 @@
 			var collage = document.querySelector("#collage");
 			var fail = false;
 			
+			console.log(main.alt);
+			
+			if (document.querySelector("#error") != null) {
+				exportButton.disabled = true;
+			}
+			else {
+				exportButton.disabled = false;
+			}
+						
 			exportButton.onclick=function() {
 				var a = $("<a>").attr("href",main.src).attr("download", main.alt+" collage.png").appendTo("body");
 				a[0].click();
@@ -113,13 +122,14 @@
 							var childrenTemp = children[i].src;
 							var childrenAlt = children[i].alt;
 							for (j = i; j < children.length; j++) {
-								(function(i) {
+								(function(j) {
 									if (j == children.length-1) {
-										if (document.querySelector("#error")!=null) {									
+										if (document.querySelector("#error")!=null) {
 											// move clicked image to main										
 											var newImage = document.createElement("img");
 											newImage.id = "main";
 											newImage.src = childrenTemp;
+											
 											newImage.alt = childrenAlt;
 											collage.innerHTML = "";
 											collage.appendChild(newImage);
@@ -131,6 +141,7 @@
 											main = document.querySelector("#main");
 											
 											exportButton.disabled = false;
+											fail = false;
 										} else {
 											children[j].src = main.src;
 											children[j].alt = main.alt;
@@ -183,7 +194,8 @@
 					},
 					success: function(response)
 					{
-						var res = response.split();
+						console.log("DEBUG: " + response);
+						var res = response.split(" ");
 						if (res[0] == "success") {
 							location.reload();
 							fail = false;
@@ -194,10 +206,11 @@
 								newDiv.classList.add("imgContainer");
 								var newImage = document.createElement("img");
 								newImage.src = main.src;
+								newImage.alt = main.alt;
 								newDiv.appendChild(newImage);
 								prev.appendChild(newDiv);
 								children = prev.getElementsByTagName("img");
-								
+								console.log(children.length);
 								newDiv = document.createElement("div");
 								newDiv.id = 'error';
 								newDiv.innerHTML = "Insufficient Number of Images Found";
@@ -206,6 +219,7 @@
 								exportButton.disabled = true;
 								title.innerHTML = "Collage for topic "+ res[1];
 								fail = true;
+								swapCollages();
 							}
 							else {
 								title.innerHTML = "Collage for topic "+ res[1];

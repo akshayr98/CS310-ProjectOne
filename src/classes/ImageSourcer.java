@@ -1,4 +1,5 @@
 package classes;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,18 +15,28 @@ import org.json.JSONObject;
 
 
 public class ImageSourcer {
-	
+
+	// configuration variables
+	private final int REQUIRED_IMAGES = 30; // number of images needed to build the collage
+	private final String API_KEY = "AIzaSyDl6T1itQ1cmgBR0dOCnI7KPWbdnwuSGUg"; // this is an API key provided by Google
+	private final String SEARCH_ENGINE_KEY = "004843956391315063069:wnj8zpugysm"; // this is a custom search engine key provided by Google
+	private final String SEARCH_FILETYPES = "png,jpg"; // desired file types for search
+	private final int GOOGLE_SEARCH_LIMIT = 10; // number of results that Google returns per query
+			
 	public Vector<String> getImages(String searchText) {
 		/* Arguments: String searchText: the thing that we want to search Google images for - provided by user in client
 		 * 
-		 * Returns: Vector<String> of URLs. This will either be null (if < 30 images found) or contain 30 image URLs of the
-		 * top 30 image results for searchText on Google. */
+		 * Returns: Vector<String> of URLs. This will either be null (if < REQUIRED_IMAGES images found) or contain REQUIRED_IMAGES image URLs of the
+		 * top REQUIRED_IMAGES image results for searchText on Google. */
 		
 		
-		// IMPORTANT NOTE: Google Custom Search API only allows return of 10 items at a time. 
-		// SOLUTION: We run the code to fetch 10 items thrice, offsetting the start index by 10 each time. 
-		// That is, the contents of the loop is the code to generate 10 image URLs. The loop itself executes 3 times, grabbing the
-		// first 10, 11-20, 21-30th images.
+		// IMPORTANT NOTE: Google Custom Search API only allows return of GOOGLE_SEARCH_LIMIT items at a time. 
+		// SOLUTION: We run the code to fetch GOOGLE_SEARCH_LIMIT items several times, offsetting the start index by GOOGLE_SEARCH_LIMIT each time. 
+		// That is, the contents of the loop is the code to generate GOOGLE_SEARCH_LIMIT image URLs. 
+		// In the case of the original values - 
+		// 	GOOGLE_SEARCH_LIMIT = 10, REQUIRED_IMAGES = 30,
+		// 	The loop itself executes 3 times, grabbing the
+		// 	first 10, 11-20, 21-30th images.
 		
 		// setting up data structures that will be populated by data later
 		BufferedReader br; // will be used to read from Google API's input stream
@@ -39,7 +50,7 @@ public class ImageSourcer {
 		 * 	2. parse data, which is returned as a JSON file, to obtain URLs
 		 * 	3. append URLs to our vector of URLs */ 
 		try {
-			for(int offset = 0; offset <= 20; offset += 10) // loops 3 times, getting 10 images each
+			for(int offset = 0; offset <= (REQUIRED_IMAGES-1)/GOOGLE_SEARCH_LIMIT * GOOGLE_SEARCH_LIMIT /* REQUIRED_IMAGES rounded down to multiple of GOOGLE_SEARCH_LIMIT */; offset += GOOGLE_SEARCH_LIMIT) // loops, getting GOOGLE_SEARCH_LIMIT images each time, until enough images gathered
 			{
 				
 				// setting up search parameters
@@ -49,12 +60,13 @@ public class ImageSourcer {
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
-				String key = "AIzaSyCMLFYK6VlsPwvUKIwB2MvHvWJ_Pf-QAn4"; // this is an API key provided by Google
-				String cx  = "004843956391315063069:wnj8zpugysm"; // this is a custom search engine key provided by Google
-				String fileType = "png,jpg"; // desired file types
+				
+				String key = API_KEY; 
+				String cx  = SEARCH_ENGINE_KEY;
+				String fileType = SEARCH_FILETYPES;
 				String searchType = "image"; // type of search to perform
-				String startIndex = String.valueOf(offset + 1); // the offset + 1 is the index of the Google results that we want to start returning our 10 results from. Results are 1-indexed.
-															// e.g. when offset = 0, start = 1, which means we are returning results 1-10.
+				String startIndex = String.valueOf(offset + 1); // the offset + 1 is the index of the Google results that we want to start returning our GOOGLE_SEARCH_LIMIT results from. Results are 1-indexed.
+															// e.g. when offset = 0, start = 1, which means we are returning results 1-GOOGLE_SEARCH_LIMIT.
 				
 				// creating connection with Google Custom Search API - see API documentation for parameter details
 				HttpURLConnection conn = null;
@@ -74,7 +86,7 @@ public class ImageSourcer {
 				// retrieving result from Google connection's input stream
 				try 
 				{
-					br = new BufferedReader(new InputStreamReader ( ( conn.getInputStream() ) ) );		
+					br = new BufferedReader(new InputStreamReader((conn.getInputStream())));		
 					String line; // temporary variable to store lines from buffered reader as we read from input stream
 					
 					// read each line one by one and append to our string builder
@@ -96,7 +108,7 @@ public class ImageSourcer {
 				try 
 				{
 					json = new JSONObject(builder.toString());
-					for(int i = 0; i < 10; i++)
+					for(int i = 0; i < GOOGLE_SEARCH_LIMIT; i++)
 					{	
 						imageUrl = json.getJSONArray("items").getJSONObject(i).getString("link");
 						imageURLs.addElement(imageUrl);
@@ -112,14 +124,21 @@ public class ImageSourcer {
 			// if any exception occurs in the image sourcing, assume Google failure 
 		}
 
-		// check that 30 image URLs were found
-		if(imageURLs.size() == 30)
+		// check that REQUIRED_IMAGES image URLs were found
+		if(imageURLs.size() >= REQUIRED_IMAGES)
 		{
-			return imageURLs;
+			// if more than REQUIRED_IMAGES URLs found, return only REQUIRED_IMAGES of them
+			Vector<String> imageURLsLimited = new Vector<String>(); // will hold only first REQUIRED_IMAGES URLs
+			for(int i = 0; i < REQUIRED_IMAGES; i++)
+			{
+				imageURLsLimited.add(imageURLs.get(i));
+			}
+			
+			return imageURLsLimited;
 		}
 		else
 		{
-			return null; // return value of null indicates that < 30 images were found
+			return null; // return value of null indicates that < REQUIRED_IMAGES images were found
 		}
 
 	} // end getImages(String)
