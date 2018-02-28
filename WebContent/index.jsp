@@ -7,17 +7,20 @@
 	</head>
 	<body>
 		<div id="content">
-			<input type="text" id="textInput" placeholder="Enter topic">
+			<input type="text" id="searchtext" placeholder="Enter topic">
 			<button id="searchbutton">Build Collage</button>
 		</div>
 		
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script>
-		var searchbutton=document.querySelector("#searchbutton");
-		var textInput=document.querySelector("#textInput");
+		var searchButton = document.querySelector("#searchbutton");
+		var searchText = document.querySelector("#searchtext"); // get value from form
+		searchButton.setAttribute("disabled", "true");
 		
-		searchbutton.onclick=function() {
-			var searchText=textInput.value;
+		searchButton.onclick=function() {
+			searchText = searchText.value;
+			var browserWidth = $(window).width(); // browser viewport width
+			var browserHeight = $(window).height(); // browser viewport height
 			console.log(searchText);
 			$.ajax({
 				type:"GET",
@@ -25,7 +28,9 @@
 				data:
 				{
 					searchText: searchText,
-					page: "index"
+					page: "index",
+					browserWidth: browserWidth,
+					browserHeight: browserHeight
 				},
 				success: function(response)
 				{
@@ -33,6 +38,15 @@
 					window.location="collagemakertest.jsp";
 				}
 			})
+		}
+		
+		searchText.onkeyup=function() {
+			if (searchText.value.length > 0) {
+				searchButton.removeAttribute("disabled");
+			}
+			else {
+				searchButton.setAttribute("disabled", "true");
+			}
 		}
 	</script>
 	</body>

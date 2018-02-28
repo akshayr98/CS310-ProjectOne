@@ -10,11 +10,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="ISO-8859-1">
 	<title>Collage Builder</title>
-	<link rel="stylesheet" type="text/css" href="collage.css">
+
 	<style>
+		#collage {
+			width: 100%
+			float: left;
+			vertical-align: middle;
+			text-align: center;
+			margin: 0;
+		}
+		#main {
+			min-width: 800px;
+			min-height: 600px;
+			width: 40vw;
+			height: 50vh;
+			margin: 0;
+		}
+		#prev {
+			height: 120px;
+			padding-top: 20px;
+			text-align: center;
+			overflow: auto;
+			white-space: nowrap;		
+		}
+		#title {
+			text-align: center;
+		}
+		#inputDiv {
+			text-align: center;
+			padding-top: 10px;
+		}
+		#prev .imgContainer {
+			height: 100px;
+			width: 100px;
+			display: inline;
+		}
 		
+		#prev .imgContainer {
+			padding-right: 10px;
+			padding-left: 10px;
+		}
+		#prev .imgContainer img {
+			height: 98px;
+		}
+		#button {
+			background-color: #2d2d2d;
+			color: white;
+			border: none;
+			height: 25px;
+		}
+		#button:hover:enabled {
+			background-color: #dbdbdb;
+			colo: #2d2d2d;
+		}
+		img {
+			text-align: center;
+		}
+		
+		#error {
+			min-width: 800px;
+			min-height: 600px;
+			width: 40vw;
+			height: 50vh;
+			border: 1px solid red;
+			margin: 0;
+		}
 	</style>
 </head>
 <body>
@@ -23,13 +84,14 @@
 CollageManager collageManager = (CollageManager) request.getSession(false).getAttribute("collageManager");
 
 Vector<BufferedImage> collages = collageManager.getCollages();
+Vector<String> collageTitle = collageManager.getCollageTitles();
 ByteArrayOutputStream byteArrayOS;
 byte[] imageBytes;
 String base64String;
 %>
 
 	<!-- TITLE -->
-	<div id="title"><h1>Collage for Topic Penguin</h1></div>
+	<div id="title"><h1>Collage for Topic <%=collageTitle.get(collageTitle.size()-1)%></h1></div>
 	
 	<!-- EXPORT BUTTON -->
 	<div id="exportDiv"><button id="export">Export as PNG</button></div>
@@ -42,7 +104,7 @@ String base64String;
 	imageBytes = Base64.getEncoder().encode(imageBytes);
 	base64String = new String(imageBytes, "UTF-8");
 	%>
-	<div id="collage"><img id="main" src="data:image/png; base64, <%=base64String%>" alt="Penguin"></div>
+	<div id="collage"><img id="main" src="data:image/png;base64,<%=base64String%>" alt="<%=collageTitle.get(collageTitle.size()-1)%>"></div>
 	
 	<!-- TEXT BOX AND BUTTON -->
 	<div id="inputDiv">
@@ -60,9 +122,10 @@ String base64String;
 				byteArrayOS = new ByteArrayOutputStream();
 				ImageIO.write(collages.get(i), "png", byteArrayOS);
 				imageBytes = byteArrayOS.toByteArray();
+				imageBytes = Base64.getEncoder().encode(imageBytes);
 				base64String = new String(imageBytes, "UTF-8");
 				%>
-				<img src="data:image/png;base64, <%=base64String%>">
+				<img src="data:image/png;base64,<%=base64String%>" alt="<%=collageTitle.get(i)%>">
 			</div>
 		<%
 		}
@@ -80,6 +143,7 @@ String base64String;
 	var children=prev.getElementsByTagName("img");
 	var main=document.querySelector("#main");
 	var exportButton=document.querySelector("#export");
+	var collage=document.querySelector("#collage");
 	
 	exportButton.onclick=function() {
 		var a = $("<a>").attr("href",main.src).attr("download", "imagename.png").appendTo("body");
@@ -94,14 +158,23 @@ String base64String;
 				children[i].onclick=function() {
 					var childrenTemp = children[i].src;
 					var childrenAlt = children[i].alt;
+					alert(childrenAlt);
 					for (j=i; j<children.length; j++) {
 						(function(i) {
 							if (j == children.length-1) {
-								children[j].src=main.src;
-								children[j].alt=main.alt;
-								main.src=childrenTemp;
-								main.alt=childrenAlt;
-								title.innerHTML = "Collage for topic "+childrenAlt;
+								if (collage.innerHTML=="Insufficient Number of Images Found") {									
+									// move clicked image to main
+									alert("Inside if: "+childrenAlt);
+									title.innerHTML = "Collage for topic "+children[i].alt;
+									
+									// remove last img element if insufficient images found
+								} else {
+									children[j].src=main.src;
+									children[j].alt=main.alt;
+									main.src=childrenTemp;
+									main.alt=childrenAlt;
+									title.innerHTML = "Collage for topic "+childrenAlt;
+								}
 							} else {
 								children[j].src=children[j+1].src;
 								children[j].alt=children[j+1].alt;
@@ -123,52 +196,53 @@ String base64String;
 		}
 	}
 	
-	// building a new collage
-	/*buildCollage.onclick=function() {
-		$.get("ImageServlet", function(response) {
-			// $.each(response, function(index, s) {
-			// 	var newDiv=document.createElement("div");
-			// 	newDiv.classList.add("imgContainer");
-			// 	var newImage=document.createElement("img");
-			// 	newImage.src="data:image/png;base64, "+s;
-			// 	newDiv.appendChild(newImage);
-			// 	prev.appendChild(newDiv);
-			// 	children=prev.getElementsByTagName("img");
-			// })
-			// alert('servlet');
-		
-			var newDiv=document.createElement("div");
-			newDiv.classList.add("imgContainer");
-			var newImage=document.createElement("img");
-			newImage.src=main.src;
-			main.src="data:image/png;base64, "+response;
-			newDiv.appendChild(newImage);
-			prev.appendChild(newDiv);
-			children=prev.getElementsByTagName("img");
-		})
-	}*/
-	
+	/*
 	buildCollage.onclick=function(event) {
 		var searchText = textInput.value;
 		console.log(searchText);
 		$.ajax({
 			type:"GET",
-			url:"collageBuilderServlet",
+			url:"collageBuilderTestServlet",
 			data:
 			{
 				searchText: searchText
 			},
 			success: function(response)
 			{
-				console.log('success');
-				var newDiv=document.createElement("div");
-				newDiv.classList.add("imgContainer");
-				var newImage=document.createElement("img");
-				newImage.src=main.src;
-				main.src="data:image/png;base64, "+response;
-				newDiv.appendChild(newImage);
-				prev.appendChild(newDiv);
-				children=prev.getElementsByTagName("img");
+				location.reload();
+			}
+		}); // end ajax
+		console.log("DEBUG: ajax ended");
+		return false;
+	}
+	*/
+	
+	buildCollage.onclick=function(event) {
+		var searchText = textInput.value;
+		console.log(searchText);
+		$.ajax({
+			type:"GET",
+			url:"collageBuilderTestServlet",
+			data:
+			{
+				searchText: searchText
+			},
+			success: function(response)
+			{
+				if (response == "success") {
+					location.reload();
+				}
+				else {
+					alert('fail');
+					var newDiv=document.createElement("div");
+					newDiv.classList.add("imgContainer");
+					var newImage=document.createElement("img");
+					newImage.src=main.src;
+					newDiv.appendChild(newImage);
+					prev.appendChild(newDiv);
+					children=prev.getElementsByTagName("img");
+					collage.innerHTML="Insufficient Number of Images Found";
+				}
 			}
 		}); // end ajax
 		console.log("DEBUG: ajax ended");

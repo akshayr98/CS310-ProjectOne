@@ -65,8 +65,9 @@ public class CollageBuilderServlet extends HttpServlet {
 		// if the imageSourcer returned 30 image URLs
 		if(imageSource != null && searchText != null && searchText.length() > 0)
 		{
-			//TODO: change the width and height
-			CollageBuilder collageBuilder = new CollageBuilder(1920, 1080); // instantiate CollageBuilder object
+			int browserWidth = Integer.valueOf(request.getParameter("browserWidth"));
+			int browserHeight = Integer.valueOf(request.getParameter("browserHeight"));
+			CollageBuilder collageBuilder = new CollageBuilder(browserWidth, browserHeight); // instantiate CollageBuilder object
 
 			
 			BufferedImage collage = collageBuilder.buildCollage(imageSource);			// CollageBuilder.buildCollage(imageSource) builds a collage out of the 30
@@ -94,8 +95,6 @@ public class CollageBuilderServlet extends HttpServlet {
 //			System.out.println(request.getParameter("page"));
 		}
 		session.setAttribute("collageManager", collageManager); // set session attribute to created CollageManager
-		System.out.println("Collage manager size: " + collageManager.getCollages().size());
-		System.out.println("Collage manager index 1: " + collageManager.getCollageTitles().get(0));
 	} // end service
 	
 	
