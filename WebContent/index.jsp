@@ -6,11 +6,13 @@
 		<link rel="stylesheet" type="text/css" href="index.css">
 	</head>
 	<body>
+		<!-- Main content div -->
 		<div id="content">
-			<input type="text" id="searchtext" placeholder="Enter topic">
-			<button id="searchbutton">Build Collage</button>
+			<div id="formcontainer">
+				<input type="text" id="searchtext" placeholder="Enter topic">
+				<button id="searchbutton">Build Collage</button>
+			</div>
 		</div>
-		
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script>
 		var searchButton = document.querySelector("#searchbutton");
@@ -34,7 +36,7 @@
 				success: function(response)
 				{
 					console.log('success');
-					window.location="collagemakertest.jsp";
+					window.location="collage.jsp";
 				}
 			})
 		}
@@ -47,6 +49,13 @@
 				searchButton.setAttribute("disabled", "true");
 			}
 		}
+		
+		document.addEventListener("keyup", function(event) {
+			if (event.keyCode == 13) {
+				searchButton.click();
+			}
+		})
+		
 	</script>
 	</body>
 </html>

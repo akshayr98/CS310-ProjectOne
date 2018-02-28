@@ -37,9 +37,7 @@ public class CollageBuilderServlet extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		if(session == null) // if HttpSession does not exist, create one
 		{
-			System.out.println("NO SESSION");
 			session = request.getSession(true);
-			System.out.println("MADE A NEW SESSION");
 		}
 		
 		// ensuring that a CollageManager exists
@@ -65,7 +63,6 @@ public class CollageBuilderServlet extends HttpServlet {
 		// if the imageSourcer returned 30 image URLs
 		if(imageSource != null && searchText != null && searchText.length() > 0)
 		{
-			System.out.println("DEBUG: " + request.getParameter("browserWidth").trim());
 			int browserWidth = Integer.valueOf(request.getParameter("browserWidth").trim());
 			int browserHeight = Integer.valueOf(request.getParameter("browserHeight").trim());
 			CollageBuilder collageBuilder = new CollageBuilder(browserWidth, browserHeight); // instantiate CollageBuilder object
@@ -81,7 +78,7 @@ public class CollageBuilderServlet extends HttpServlet {
 		
 		String result = "";
 		if (collageBuildingFailed) {
-			result = "fail";
+			result = "fail " + searchText;
 		} else {
 			result = "success";
 		}
@@ -89,8 +86,7 @@ public class CollageBuilderServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(result);
 		session.setAttribute("collageManager", collageManager); // set session attribute to created CollageManager
-		System.out.println("Collage manager size: " + collageManager.getCollages().size());
-		System.out.println("Collage manager index 1: " + collageManager.getCollageTitles().get(0));
+		session.setAttribute("currentSearchText", searchText);
 	} // end service
 	
 	
