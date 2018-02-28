@@ -65,10 +65,10 @@ public class CollageBuilderServlet extends HttpServlet {
 		// if the imageSourcer returned 30 image URLs
 		if(imageSource != null && searchText != null && searchText.length() > 0)
 		{
-			int browserWidth = Integer.valueOf(request.getParameter("browserWidth"));
-			int browserHeight = Integer.valueOf(request.getParameter("browserHeight"));
+			System.out.println("DEBUG: " + request.getParameter("browserWidth").trim());
+			int browserWidth = Integer.valueOf(request.getParameter("browserWidth").trim());
+			int browserHeight = Integer.valueOf(request.getParameter("browserHeight").trim());
 			CollageBuilder collageBuilder = new CollageBuilder(browserWidth, browserHeight); // instantiate CollageBuilder object
-
 			
 			BufferedImage collage = collageBuilder.buildCollage(imageSource);			// CollageBuilder.buildCollage(imageSource) builds a collage out of the 30
 																						// images returned from the ImageSourcer and returns it as a BufferedImage.
@@ -79,22 +79,18 @@ public class CollageBuilderServlet extends HttpServlet {
 			collageBuildingFailed = true;
 		}
 		
+		String result = "";
 		if (collageBuildingFailed) {
-			
+			result = "fail";
 		} else {
-//			Vector<BufferedImage> collages = collageManager.getCollages();
-//			BufferedImage bImage = collages.get(collages.size()-1);
-//			ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
-//			ImageIO.write(bImage, "png", byteArrayOS);
-//			byte[] imageBytes = byteArrayOS.toByteArray();
-//			imageBytes = Base64.getEncoder().encode(imageBytes);
-//			String base64String = new String(imageBytes, "UTF-8");
-//			response.setContentType("text/plain");
-//			response.setCharacterEncoding("UTF-8");
-//			response.getWriter().write(base64String);
-//			System.out.println(request.getParameter("page"));
+			result = "success";
 		}
+		response.setContentType("text/plain");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(result);
 		session.setAttribute("collageManager", collageManager); // set session attribute to created CollageManager
+		System.out.println("Collage manager size: " + collageManager.getCollages().size());
+		System.out.println("Collage manager index 1: " + collageManager.getCollageTitles().get(0));
 	} // end service
 	
 	

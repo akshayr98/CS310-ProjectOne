@@ -28,7 +28,6 @@
 				data:
 				{
 					searchText: searchText,
-					page: "index",
 					browserWidth: browserWidth,
 					browserHeight: browserHeight
 				},
