@@ -25,7 +25,7 @@ public class CollageBuilder {
 	
 	private void multiImageTest(CollageBuilder cb) {
 		ImageSourcer is = new ImageSourcer();
-		Vector<String> imageSource = is.getImages("elon musk");
+		Vector<String> imageSource = is.getImages("michael jackson");
 		BufferedImage collage = cb.buildCollage(imageSource);
 		
 		JFrame frame = new JFrame();
@@ -69,9 +69,10 @@ public class CollageBuilder {
 	 * Generates a collage from given vector of image URLs as a BufferedImage
 	 */
 	public BufferedImage buildCollage(Vector<String> imageSource){
+		System.out.println("printing1");
 		// Create a BufferedImage "canvas" to composite all other images on
 		BufferedImage collage = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_INT_ARGB);
-		
+		System.out.println("printing2");
 		// Create a Graphics2D object to composite images
 		Graphics2D g2d = collage.createGraphics();
 		g2d.setColor(Color.white);
@@ -79,13 +80,16 @@ public class CollageBuilder {
 		
 		try {
 			// Convert image URLs to BufferedImages
+			System.out.println("printing3");
 			Vector<BufferedImage> bufferedImageVec = urlsToBufferedImages(imageSource);
+			System.out.println("printing4");
 			Vector<Integer> randDegrees = null;
 			System.out.println("Number of images:" + bufferedImageVec.size());
 			
 			// Generate random values until there is at least one zero present
 			int minDegree = 1;
 			while (minDegree > 0) {
+				System.out.println("printing");
 				randDegrees = generateDegrees();
 				int indexOfZero = randDegrees.indexOf(0);
 				if (indexOfZero > -1) {
@@ -153,6 +157,7 @@ public class CollageBuilder {
 			HttpURLConnection conn = null;
 			BufferedImage image = null;
 			try {
+				System.out.println("i am here1");
 				url = new URL(urlString);
 				conn = (HttpURLConnection) url.openConnection();
 				conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
@@ -162,6 +167,7 @@ public class CollageBuilder {
 				{
 					bufferedImageVec.add(image);
 				}
+				System.out.println("i am here2");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
