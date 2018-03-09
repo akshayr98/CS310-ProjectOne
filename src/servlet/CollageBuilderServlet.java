@@ -89,7 +89,7 @@ public class CollageBuilderServlet extends HttpServlet {
 
 
 		/**** TESTING CODE ****/
-		BufferedImage bImage = ImageIO.read(new File("/home/student/test.png"));
+		BufferedImage bImage = ImageIO.read(new File("/home/student/test.png")); //Get image from local directory
 		String result = "success";
 
 		collageManager.insertCollage("test", bImage);
